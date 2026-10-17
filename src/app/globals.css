@@ -33,11 +33,14 @@ body {
   font-family: var(--font-inter), system-ui, sans-serif;
 }
 
-/* One visible focus ring everywhere, for keyboard users. */
-:focus-visible {
-  outline: 3px solid var(--color-amber);
-  outline-offset: 2px;
-  border-radius: 6px;
+/* One visible focus ring everywhere, for keyboard users. In the base layer so a
+   utility (like the nav's inset ring) can adjust it; unlayered CSS would win. */
+@layer base {
+  :focus-visible {
+    outline: 3px solid var(--color-amber);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
 }
 
 input[type="range"] {
