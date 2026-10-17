@@ -1,0 +1,36 @@
+import type { ReactNode } from "react";
+import { AppNav } from "./AppNav";
+
+/** Every route's frame: the wordmark, one heading, content, and the shared nav. */
+export function Screen({
+  title,
+  hideTitle,
+  children,
+}: {
+  title: string;
+  /** Keep the heading for screen readers but let the content lead visually. */
+  hideTitle?: boolean;
+  children: ReactNode;
+}) {
+  return (
+    <>
+      <div className="mx-auto flex min-h-dvh max-w-md flex-col px-5 pt-5 pb-24">
+        <header className="mb-6 flex items-center justify-between">
+          <p className="font-display text-sm font-semibold tracking-wide text-amber">
+            Last Cup
+          </p>
+        </header>
+        <h1 className={hideTitle ? "sr-only" : "mb-6 font-display text-2xl font-semibold"}>
+          {title}
+        </h1>
+        <main className="flex flex-1 flex-col">{children}</main>
+      </div>
+      <AppNav />
+    </>
+  );
+}
+
+/** Placeholder while localStorage is read, so nobody sees the wrong screen flash. */
+export function Loading() {
+  return <div aria-busy="true" className="flex-1" />;
+}
