@@ -16,8 +16,10 @@ export function HeroNumber({
   const day = dayLabel(sleep, now);
   return (
     <div aria-live="polite" aria-atomic="true">
+      {/* Proportional figures here: Space Grotesk's tabular "1" has a slab foot that reads
+          as a stray stroke at this size, and a lone number has nothing to align with. */}
       <p
-        className={`font-display text-7xl leading-none font-semibold tabular-nums ${
+        className={`font-display text-7xl leading-none font-semibold ${
           over ? "text-coral" : "text-amber"
         }`}
       >
