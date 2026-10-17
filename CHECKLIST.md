@@ -6,7 +6,7 @@ Every item is taken from the brief. An item is ticked only once it has been **ve
 
 | # | Requirement | Evidence | Status |
 |---|---|---|---|
-| A1 | A live Vercel URL that works | | ☐ |
+| A1 | A live Vercel URL that works | https://design-ship-build-homework-3.vercel.app: `/`, `/log`, `/sleep`, `/settings` all return 200; Vercel check passed on commit 6875823 | ☑ |
 | A2 | A new tool built around its flows (first visit, main task, coming back), with a page for each step and shared navigation | | ☐ |
 | A3 | Flows as a diagram (Mermaid), shown in `README.md` | `flows.md`, embedded in `README.md` → Flows | ☑ |
 | A4 | A first visit that gives someone new something useful right away | No quiz or account: one sleep question, then tapping a chip shows the mg at sleep (`/sleep`, `/`) | ☑ |
@@ -52,7 +52,7 @@ Every item is taken from the brief. An item is ticked only once it has been **ve
 | D1 | Next.js and Tailwind CSS | ☑ create-next-app 15.5, Tailwind 4 |
 | D2 | localStorage only: no database, accounts or external APIs | ☑ No API routes, no fetch calls; all state in `localStorage` |
 | D3 | Code in your own GitHub repo | ☑ github.com/nocturnalvigilante/design_ship_build_homework_3 |
-| D4 | Deployed on Vercel's free Hobby plan | ☐ |
+| D4 | Deployed on Vercel's free Hobby plan | ☑ https://design-ship-build-homework-3.vercel.app, auto-deploys from `main` |
 | D5 | Pushed back on any unneeded database, backend or package | ☐ |
 | D6 | `AGENTS.md` is the context file; no `CLAUDE.md`; checked with `/context` that `AGENTS.md` loaded | ☐ `AGENTS.md` written, no `CLAUDE.md`; `/context` check still to do |
 
@@ -70,5 +70,5 @@ Every item is taken from the brief. An item is ticked only once it has been **ve
 
 | # | Item | Status |
 |---|---|---|
-| F1 | Vercel URL | ☐ |
-| F2 | GitHub URL (README + commit history) | ☐ |
+| F1 | Vercel URL | ☑ https://design-ship-build-homework-3.vercel.app |
+| F2 | GitHub URL (README + commit history) | ☑ github.com/nocturnalvigilante/design_ship_build_homework_3 |

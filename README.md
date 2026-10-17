@@ -4,7 +4,7 @@
 
 Built for people whose bedtime moves: night-shift nurses, rotating-shift healthcare workers, PhD students. Tap the drink you just had. Last Cup tells you how many mg will still be in you at your next sleep, at 9am after a night shift or 3pm on a swing shift, and when you'll be clear. No account, no quiz, nothing leaves your phone.
 
-- Live: _deploying_
+- Live: https://design-ship-build-homework-3.vercel.app
 - Course: MPCS 51238 Design, Build, Ship, Assignment 3 (Patterns & Flows)
 
 ## Demo in 30 seconds
