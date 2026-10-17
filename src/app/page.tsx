@@ -132,6 +132,12 @@ export default function NowPage() {
             Other…
           </Button>
         </div>
+        {options.some((o) => atSleep + Math.round(doseRemaining(o.mg, now, sleep, halfLifeH)) > thresholdMg) && (
+          <p className="mt-2 text-sm text-muted">
+            <span className="text-coral">Coral</span> ones would put you over your {thresholdMg} mg
+            line at sleep.
+          </p>
+        )}
       </section>
 
       {today > DAILY_REFERENCE_MG && (

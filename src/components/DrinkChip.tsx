@@ -27,6 +27,8 @@ export function DrinkChip({
       }`}
     >
       <span className="text-base leading-tight font-semibold text-text">{name}</span>
+      {/* The dose itself, so a bigger can than ours is easy to spot. */}
+      <span className="text-sm text-muted tabular-nums">{mg} mg</span>
       <span className={`text-sm tabular-nums ${wouldCross ? "text-coral" : "text-muted"}`}>
         +{addsAtSleep} at sleep
       </span>
