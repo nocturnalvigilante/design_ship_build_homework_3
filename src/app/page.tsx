@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/Button";
@@ -85,6 +86,13 @@ export default function NowPage() {
           thresholdMg={thresholdMg}
           over={over}
         />
+        <p className="mt-1 text-sm text-muted tabular-nums">
+          An estimate, not medical advice: {halfLifeH} h half-life, counted from when you start
+          drinking.{" "}
+          <Link href="/settings" className="text-text underline decoration-edge underline-offset-4 hover:decoration-amber">
+            Adjust
+          </Link>
+        </p>
       </div>
 
       <section aria-label="Log a drink" className="mt-4">
