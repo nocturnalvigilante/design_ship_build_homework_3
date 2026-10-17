@@ -20,7 +20,7 @@ import {
 } from "@/lib/caffeine";
 import { drinkOptions } from "@/lib/options";
 import { clearLogged, newId, peekLogged, useLastCup } from "@/lib/storage";
-import { clock, fromNow, useNow } from "@/lib/time";
+import { clock, dayLabel, fromNow, useNow } from "@/lib/time";
 
 export default function NowPage() {
   const router = useRouter();
@@ -174,14 +174,19 @@ export default function NowPage() {
 
       {recent.length > 0 && (
         <section aria-labelledby="recent" className="mt-8">
-          <h2 id="recent" className="mb-2 text-sm font-medium text-muted">
-            Last 24 hours
+          <h2 id="recent" className="mb-2 text-sm font-medium text-muted tabular-nums">
+            Last 24 hours: {today} mg drunk, {Math.round(remainingAt(drinks, now, halfLifeH))} mg
+            in you now
           </h2>
           <ul className="divide-y divide-line rounded-xl border border-line">
             {recent.map((d) => (
               <li key={d.id} className="flex items-center justify-between gap-3 py-1 pr-1 pl-4">
                 <span className="tabular-nums">
-                  <span className="text-muted">{clock(d.at)}</span> {d.name}{" "}
+                  <span className="text-muted">
+                    {dayLabel(d.at, now) === "today" ? "" : `${dayLabel(d.at, now)} `}
+                    {clock(d.at)}
+                  </span>{" "}
+                  {d.name}{" "}
                   <span className="text-muted">
                     {d.mg} mg, {Math.round(doseRemaining(d.mg, d.at, now, halfLifeH))} left
                   </span>
