@@ -20,7 +20,7 @@ import {
 export default function SleepPage() {
   const { state, update } = useLastCup();
   return (
-    <Screen title="When are you sleeping next?" hideTitle>
+    <Screen title="When are you sleeping next?" pageHasHeading>
       {state ? <SleepForm state={state} update={update} /> : <Loading />}
     </Screen>
   );
@@ -73,9 +73,9 @@ function SleepForm({
       {returning && lastSleep !== null && <WelcomeBack state={state} lastSleep={lastSleep} />}
 
       <form onSubmit={onSubmit} noValidate className="flex flex-1 flex-col">
-        <h2 className="mb-6 font-display text-3xl font-semibold leading-tight">
+        <h1 className="mb-6 font-display text-3xl font-semibold leading-tight">
           When are you sleeping next?
-        </h2>
+        </h1>
 
         <Field
           label="I'm going to sleep at"

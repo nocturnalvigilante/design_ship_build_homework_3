@@ -5,11 +5,14 @@ import { AppNav } from "./AppNav";
 export function Screen({
   title,
   hideTitle,
+  pageHasHeading,
   children,
 }: {
   title: string;
   /** Keep the heading for screen readers but let the content lead visually. */
   hideTitle?: boolean;
+  /** The page renders its own visible <h1>, so don't add a second one. */
+  pageHasHeading?: boolean;
   children: ReactNode;
 }) {
   return (
@@ -20,9 +23,11 @@ export function Screen({
             Last Cup
           </p>
         </header>
-        <h1 className={hideTitle ? "sr-only" : "mb-6 font-display text-2xl font-semibold"}>
-          {title}
-        </h1>
+        {!pageHasHeading && (
+          <h1 className={hideTitle ? "sr-only" : "mb-6 font-display text-2xl font-semibold"}>
+            {title}
+          </h1>
+        )}
         <main className="flex flex-1 flex-col">{children}</main>
       </div>
       <AppNav />
