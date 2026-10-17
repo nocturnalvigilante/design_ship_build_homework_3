@@ -11,7 +11,7 @@ Every item is taken from the brief. An item is ticked only once it has been **ve
 | A3 | Flows as a diagram (Mermaid), shown in `README.md` | `flows.md`, embedded in `README.md` → Flows | ☑ |
 | A4 | A first visit that gives someone new something useful right away | No quiz or account: one sleep question, then tapping a chip shows the mg at sleep (`/sleep`, `/`) | ☑ |
 | A5 | A form whose errors sit next to the field and say what to do next, and that keeps what the person typed | `/log`: five errors next to their fields, saying what to do; typed values kept (verified: "Pre-workout"/"5000" kept); focus moves to the first error | ☑ |
-| A6 | A reason to come back, and a tool that remembers you between visits | Welcome-back summary of the last shift + one-tap "Same time"; drinks, sleep time, settings and custom drinks in `localStorage` (`lastcup:v1`) | ☑ |
+| A6 | A reason to come back, and a tool that remembers you between visits | Welcome-back summary of the last shift + one-tap "Same as last time"; drinks, sleep time, settings and custom drinks in `localStorage` (`lastcup:v1`) | ☑ |
 | A7 | Keyboard access, real labels, text contrast checked with the agent | README → Accessibility: tab order and focus ring checked in headless Chrome; labels + aria-describedby; contrast computed by script | ☑ |
 | A8 | First-run check in `README.md`: the agent's usability feedback | | ☐ |
 | A9 | A GitHub repo with commits that show progress (not one-shot) | github.com/nocturnalvigilante/design_ship_build_homework_3, small commits from the first flow to the fixes | ☑ |
@@ -35,7 +35,7 @@ Every item is taken from the brief. An item is ticked only once it has been **ve
 
 | # | Requirement | Status |
 |---|---|---|
-| C1 | Flow: first visit, core task and returning all work end to end | ☑ Headless Chrome run on fe02, 17 Oct: first visit → /sleep → chip → hero; return → welcome back → Same time |
+| C1 | Flow: first visit, core task and returning all work end to end | ☑ Headless Chrome run on fe02, 17 Oct: first visit → /sleep → chip → hero; return → welcome back → Same as last time |
 | C2 | Onboarding: something useful on the first visit, no dead-end empty screen | ☑ See A4/B5 |
 | C3 | Forms: one column, a label on every field, errors next to the field saying what to do, typed input kept | ☑ See A5; one column, `<label for>` on every input |
 | C4 | Coming back: remembers saved data locally, with an experience designed around returning | ☑ See A6 |

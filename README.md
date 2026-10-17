@@ -71,7 +71,7 @@ flowchart TD
   A([Open on next shift]) --> B{Saved sleep still ahead?}
   B -- yes --> N["/ Now<br/>remembered drinks, usual drinks first"]
   B -- no, it passed --> S["/sleep<br/>Welcome back. Last shift: 3 drinks, 64 mg at your 9:00 sleep"]
-  S -- tap Same time --> N
+  S -- tap Same as last time --> N
   S -- pick a new time --> N
 ```
 
@@ -81,7 +81,7 @@ flowchart TD
 - **Under the threshold at sleep:** amber hero.
 - **Over the threshold at sleep:** coral hero and "clear by HH:MM".
 - **Chip would cross the threshold:** the chip's preview turns coral before you tap.
-- **Returning, sleep passed:** welcome-back summary and a one-tap "Same time".
+- **Returning, sleep passed:** welcome-back summary and a one-tap "Same as last time".
 - **Returning, sleep ahead:** straight to Now.
 - **Past 400 mg in 24 h:** a muted note (reference, not advice).
 - **Sleep times can't be in the past:** "9:00" means the next time the clock reads 9:00, and the hint spells it out ("That's 9:00 tomorrow, in 7 h"). That removed an error we'd planned, which is simpler than catching it.

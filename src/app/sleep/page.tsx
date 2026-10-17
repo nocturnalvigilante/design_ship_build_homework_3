@@ -64,6 +64,11 @@ function SleepForm({
 
   return (
     <div className="flex flex-1 flex-col">
+      {/* The question comes first, then why it's asked (first visit) or last shift (returning). */}
+      <h1 className="mb-4 font-display text-3xl font-semibold leading-tight">
+        When are you sleeping next?
+      </h1>
+
       {firstVisit && (
         <p className="mb-8 text-lg leading-relaxed text-muted">
           See how much caffeine will still be in you when you sleep, whatever time that is. No
@@ -74,10 +79,6 @@ function SleepForm({
       {returning && lastSleep !== null && <WelcomeBack state={state} lastSleep={lastSleep} />}
 
       <form onSubmit={onSubmit} noValidate className="flex flex-1 flex-col">
-        <h1 className="mb-6 font-display text-3xl font-semibold leading-tight">
-          When are you sleeping next?
-        </h1>
-
         <Field
           label="I'm going to sleep at"
           type="time"
@@ -101,12 +102,12 @@ function SleepForm({
           {returning && sameTime !== null && (
             <Button full onClick={() => save(sameTime)}>
               <span className="tabular-nums">
-                Same time: {clock(sameTime)} {dayLabel(sameTime, now)}
+                Same as last time: {clock(sameTime)} {dayLabel(sameTime, now)}
               </span>
             </Button>
           )}
           <Button full type="submit" variant={returning ? "secondary" : "primary"}>
-            {firstVisit ? "Next: what are you drinking?" : "Save sleep time"}
+            {firstVisit ? "Next: what are you drinking?" : returning ? "Use the time above" : "Save sleep time"}
           </Button>
         </ActionBar>
       </form>
