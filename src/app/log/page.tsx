@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useRef, useState, type FormEvent } from "react";
+import { ActionBar } from "@/components/ActionBar";
 import { Button } from "@/components/Button";
 import { Field } from "@/components/Field";
 import { Loading, Screen } from "@/components/Screen";
@@ -169,11 +170,11 @@ function LogForm({
           Add it to my one-tap drinks
         </label>
 
-        <div className="mt-auto pt-4">
+        <ActionBar>
           <Button full type="submit">
             Log drink
           </Button>
-        </div>
+        </ActionBar>
       </form>
     </div>
   );

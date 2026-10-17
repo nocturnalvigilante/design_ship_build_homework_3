@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
+import { ActionBar } from "@/components/ActionBar";
 import { Button } from "@/components/Button";
 import { Field } from "@/components/Field";
 import { Loading, Screen } from "@/components/Screen";
@@ -96,7 +97,7 @@ function SleepForm({
           }
         />
 
-        <div className="mt-auto flex flex-col gap-3 pt-8">
+        <ActionBar>
           {returning && sameTime !== null && (
             <Button full onClick={() => save(sameTime)}>
               <span className="tabular-nums">
@@ -107,7 +108,7 @@ function SleepForm({
           <Button full type="submit" variant={returning ? "secondary" : "primary"}>
             {firstVisit ? "Next: what are you drinking?" : "Save sleep time"}
           </Button>
-        </div>
+        </ActionBar>
       </form>
     </div>
   );
