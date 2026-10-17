@@ -72,6 +72,8 @@ function LogForm({
   const [name, setName] = useState("");
   const [mg, setMg] = useState("");
   const [at, setAt] = useState(() => toLocalInput(Date.now()));
+  // The input only holds whole minutes; if it's untouched, "now" means the moment of saving.
+  const [atTouched, setAtTouched] = useState(false);
   const [remember, setRemember] = useState(true);
   const [errors, setErrors] = useState<Errors>({});
   const formRef = useRef<HTMLFormElement>(null);
@@ -95,7 +97,7 @@ function LogForm({
 
     const drinkName = name.trim() || "Drink";
     const isKnown = options.some((o) => o.name.toLowerCase() === drinkName.toLowerCase());
-    const drink = { id: newId(), name: drinkName, mg: result.mg!, at: result.at! };
+    const drink = { id: newId(), name: drinkName, mg: result.mg!, at: atTouched ? result.at! : now };
     update((s) => ({
       ...s,
       drinks: [...s.drinks, drink],
@@ -160,7 +162,10 @@ function LogForm({
           type="datetime-local"
           value={at}
           max={toLocalInput(Date.now())}
-          onChange={(e) => setAt(e.target.value)}
+          onChange={(e) => {
+            setAt(e.target.value);
+            setAtTouched(true);
+          }}
           error={errors.at}
           hint="When you started drinking it; close enough is fine. Leave it as now if you just did."
         />
