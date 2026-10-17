@@ -37,8 +37,9 @@ function SettingsForm({
   function onThreshold(raw: string) {
     setThreshold(raw);
     const mg = Number(raw);
-    if (!raw.trim() || !Number.isFinite(mg) || mg < 0 || mg > 400) {
-      setThresholdError("Enter a number of mg between 0 and 400. 50 is a common starting point.");
+    // 0 would mean "never clear", so the clear-by time could never be shown.
+    if (!raw.trim() || !Number.isFinite(mg) || mg < 1 || mg > 400) {
+      setThresholdError("Enter a number of mg between 1 and 400. 50 is a common starting point.");
       return;
     }
     setThresholdError(undefined);
