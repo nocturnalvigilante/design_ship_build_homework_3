@@ -26,7 +26,7 @@ export function AppNav() {
               <Link
                 href={item.href}
                 aria-current={current ? "page" : undefined}
-                className={`flex min-h-14 flex-col items-center justify-center gap-1 text-sm font-medium ${
+                className={`flex min-h-14 flex-col items-center justify-center gap-1 text-sm font-medium focus-visible:-outline-offset-4 ${
                   current ? "text-amber" : "text-muted hover:text-text"
                 }`}
               >
