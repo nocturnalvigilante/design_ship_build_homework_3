@@ -68,10 +68,13 @@ export function curvePoints(
   halfLifeH: number,
   samples = 96,
 ): { t: number; mg: number }[] {
-  const points = [];
-  for (let i = 0; i <= samples; i++) {
-    const t = start + ((end - start) * i) / samples;
-    points.push({ t, mg: remainingAt(drinks, t, halfLifeH) });
+  const times: number[] = [];
+  for (let i = 0; i <= samples; i++) times.push(start + ((end - start) * i) / samples);
+  // Sample just before and at each dose so the jump is drawn as a step, not a slope.
+  for (const d of drinks) {
+    if (d.at > start && d.at <= end) times.push(d.at - 1, d.at);
   }
-  return points;
+  return times
+    .sort((a, b) => a - b)
+    .map((t) => ({ t, mg: remainingAt(drinks, t, halfLifeH) }));
 }

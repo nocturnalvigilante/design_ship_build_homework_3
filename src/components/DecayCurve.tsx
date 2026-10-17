@@ -1,4 +1,4 @@
-import { HOUR, curvePoints, type LoggedDrink } from "@/lib/caffeine";
+import { HOUR, curvePoints, remainingAt, type LoggedDrink } from "@/lib/caffeine";
 import { clock } from "@/lib/time";
 
 const W = 340;
@@ -36,7 +36,8 @@ export function DecayCurve({
 
   const line = points.map((p, i) => `${i ? "L" : "M"}${x(p.t).toFixed(1)},${y(p.mg).toFixed(1)}`).join("");
   const area = `${line}L${x(end).toFixed(1)},${base}L${x(start).toFixed(1)},${base}Z`;
-  const nowMg = points.reduce((a, b) => (Math.abs(b.t - now) < Math.abs(a.t - now) ? b : a)).mg;
+  // Exact, not the nearest sample: a drink logged this second is already in you.
+  const nowMg = remainingAt(drinks, now, halfLifeH);
   const sleepColor = over ? "var(--color-coral)" : "var(--color-amber)";
   // With sleep close by, "now" would print over "sleep 9:00"; the dot alone marks now then.
   const showNowLabel = Math.abs(x(sleep) - x(now)) > 46;
