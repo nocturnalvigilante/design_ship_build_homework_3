@@ -88,6 +88,27 @@ flowchart TD
 
 The diagrams also live in [`flows.md`](flows.md).
 
+## Research: how similar tools welcome someone new
+
+Three subagents each studied one tool, and a fourth studied night-time visual design. The full notes and sources are in [`research.md`](research.md).
+
+| Tool | What it asks first | Useful after |
+|---|---|---|
+| RISE | A 30+ step quiz, permissions, then a paywall | About 2 min, and its own help says it fails on rotating shifts |
+| Timeshifter Shift Work | An account, your full shift schedule, chronotype | Only once the whole schedule is entered |
+| Caffeine Clock / HalfCup | A short setup, no account | Quickly, but it assumes a fixed bedtime |
+
+**Decision:** no quiz and no account. Ask one question, "When are you sleeping next?", where any hour works. Then tapping one chip gives the answer. Rotating shifts are handled by asking for the next sleep each time (one tap keeps the last one) instead of a calendar to fill in.
+
+## What we said no to
+
+- **No chart library.** One curve doesn't justify a dependency, so it's hand-drawn SVG ([`DecayCurve.tsx`](src/components/DecayCurve.tsx)).
+- **No date library.** "Next 9:00" and "in 7 h" are a few lines in [`time.ts`](src/lib/time.ts).
+- **No backend, accounts or sync.** One `localStorage` key holds everything, and a nurse at 3am shouldn't have to sign in.
+- **No onboarding tour or quiz.** The research above showed that's where the other tools lose people.
+
+The only runtime dependencies are `next`, `react` and `react-dom`.
+
 ## The model
 
 One-compartment exponential decay, `remaining = dose × 0.5^(hours / halfLife)`, summed over every drink. The half-life defaults to 5 h (adjustable from 2 to 10 h, since people vary). Absorption is treated as instant. The 50 mg sleep line is an adjustable heuristic, not medical advice. The 400 mg/day figure is the FDA's reference for most adults. Sources for every drink's mg value are in [`src/lib/drinks.ts`](src/lib/drinks.ts) and [`research.md`](research.md).
