@@ -48,6 +48,7 @@ function SettingsForm({
 
   return (
     <div className="flex flex-col gap-8">
+      <p className="-mt-2 text-muted">Changes save as you make them.</p>
       <Slider
         label="Caffeine half-life"
         value={state.halfLifeH}
