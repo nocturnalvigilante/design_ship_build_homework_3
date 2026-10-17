@@ -1,26 +1,42 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/*
+  Night palette from research.md: warm, low-luminance, no white, no blue or green.
+  Contrast checked with a WCAG script (see README):
+  text/bg 13.9, muted/bg 6.8, amber/bg 9.2, coral/raised 4.9, edge/surface 3.4 (UI, needs 3:1).
+*/
+@theme {
+  --color-bg: #14110f;
+  --color-surface: #1f1a16;
+  --color-raised: #2a231d;
+  --color-line: #3a3029;
+  --color-edge: #7a6b5d;
+  --color-text: #e8dccb;
+  --color-muted: #a8998a;
+  --color-amber: #f2a541;
+  --color-coral: #e0705a;
+
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-space-grotesk);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  color-scheme: dark;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+/* One visible focus ring everywhere, for keyboard users. */
+:focus-visible {
+  outline: 3px solid var(--color-amber);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+input[type="range"] {
+  accent-color: var(--color-amber);
 }
