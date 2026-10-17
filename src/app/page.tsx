@@ -23,7 +23,9 @@ import { clock, fromNow, useNow } from "@/lib/time";
 export default function NowPage() {
   const router = useRouter();
   const { state, update } = useLastCup();
-  const now = useNow();
+  const tick = useNow();
+  // The clock ticks every 30 s, but a drink logged a moment ago must count as drunk.
+  const now = Math.max(tick, ...(state?.drinks.map((d) => d.at) ?? []));
   const [justLogged, setJustLogged] = useState<{ id: string; name: string } | null>(null);
 
   // No upcoming sleep yet (first visit, or the last one passed): ask first.
