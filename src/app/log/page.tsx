@@ -73,6 +73,8 @@ function LogForm({
   const formRef = useRef<HTMLFormElement>(null);
 
   const options = drinkOptions(state);
+  // The first five are already one-tap chips on Now; offer the rest here.
+  const more = options.slice(5);
 
   function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -104,10 +106,10 @@ function LogForm({
     <div className="flex flex-1 flex-col">
       <section aria-labelledby="start-from" className="mb-8">
         <h2 id="start-from" className="mb-3 text-sm font-medium text-muted">
-          Start from a drink
+          More drinks
         </h2>
         <ul className="flex flex-wrap gap-2">
-          {options.map((o) => (
+          {more.map((o) => (
             <li key={o.key}>
               <button
                 type="button"

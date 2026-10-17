@@ -15,7 +15,10 @@
   --color-muted: #a8998a;
   --color-amber: #f2a541;
   --color-coral: #e0705a;
+}
 
+/* inline: next/font sets these variables on <body>, so resolve them there, not on :root. */
+@theme inline {
   --font-sans: var(--font-inter);
   --font-display: var(--font-space-grotesk);
 }
@@ -27,7 +30,7 @@ html {
 body {
   background: var(--color-bg);
   color: var(--color-text);
-  font-family: var(--font-sans), system-ui, sans-serif;
+  font-family: var(--font-inter), system-ui, sans-serif;
 }
 
 /* One visible focus ring everywhere, for keyboard users. */

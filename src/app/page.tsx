@@ -87,6 +87,45 @@ export default function NowPage() {
         />
       </div>
 
+      <section aria-label="Log a drink" className="mt-4">
+        <div className="mb-3 flex min-h-12 items-center justify-between gap-3" aria-live="polite">
+          {justLogged ? (
+            <>
+              <p>Logged {justLogged.name}.</p>
+              <Button variant="ghost" className="px-3" onClick={() => remove(justLogged.id)}>
+                Undo
+              </Button>
+            </>
+          ) : (
+            <h2 id="add" className="font-display text-lg font-semibold">
+              Just had something?
+            </h2>
+          )}
+        </div>
+        <div className="grid grid-cols-3 gap-2">
+          {options.map((o) => {
+            const adds = Math.round(doseRemaining(o.mg, now, sleep, halfLifeH));
+            return (
+              <DrinkChip
+                key={o.key}
+                name={o.name}
+                mg={o.mg}
+                addsAtSleep={adds}
+                wouldCross={atSleep + adds > thresholdMg}
+                onLog={() => log(o.name, o.mg)}
+              />
+            );
+          })}
+          <Button
+            href="/log"
+            variant="secondary"
+            className="min-h-16 rounded-xl px-3 text-base"
+          >
+            Other…
+          </Button>
+        </div>
+      </section>
+
       {today > DAILY_REFERENCE_MG && (
         <div className="mt-4">
           <Notice>
@@ -99,7 +138,7 @@ export default function NowPage() {
       )}
 
       {recent.length > 0 && (
-        <section aria-labelledby="recent" className="mt-6">
+        <section aria-labelledby="recent" className="mt-8">
           <h2 id="recent" className="mb-2 text-sm font-medium text-muted">
             Last 24 hours
           </h2>
@@ -126,43 +165,6 @@ export default function NowPage() {
         </section>
       )}
 
-      <section aria-labelledby="add" className="mt-auto pt-8">
-        <div aria-live="polite" className="min-h-12">
-          {justLogged && (
-            <p className="flex items-center justify-between rounded-xl bg-raised py-1 pr-1 pl-4">
-              <span>Logged {justLogged.name}.</span>
-              <Button variant="ghost" className="px-3" onClick={() => remove(justLogged.id)}>
-                Undo
-              </Button>
-            </p>
-          )}
-        </div>
-        <h2 id="add" className="mt-2 mb-3 font-display text-lg font-semibold">
-          Just had something?
-        </h2>
-        <div className="grid grid-cols-3 gap-2">
-          {options.map((o) => {
-            const adds = Math.round(doseRemaining(o.mg, now, sleep, halfLifeH));
-            return (
-              <DrinkChip
-                key={o.key}
-                name={o.name}
-                mg={o.mg}
-                addsAtSleep={adds}
-                wouldCross={atSleep + adds > thresholdMg}
-                onLog={() => log(o.name, o.mg)}
-              />
-            );
-          })}
-          <Button
-            href="/log"
-            variant="secondary"
-            className="min-h-16 rounded-xl px-3 text-base"
-          >
-            Other…
-          </Button>
-        </div>
-      </section>
     </Screen>
   );
 }

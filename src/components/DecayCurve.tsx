@@ -44,7 +44,7 @@ export function DecayCurve({
       <path d={area} fill="var(--color-amber)" opacity="0.12" />
 
       <line x1={PAD.left} x2={W - PAD.right} y1={y(thresholdMg)} y2={y(thresholdMg)} stroke="var(--color-muted)" strokeDasharray="4 4" strokeWidth="1" />
-      <text x={W - PAD.right} y={y(thresholdMg) - 5} textAnchor="end" fontSize="11" fill="var(--color-muted)" className="tabular-nums">
+      <text x={PAD.left} y={y(thresholdMg) - 5} textAnchor="start" fontSize="11" fill="var(--color-muted)" className="tabular-nums">
         {thresholdMg} mg
       </text>
 
