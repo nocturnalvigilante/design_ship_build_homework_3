@@ -92,6 +92,23 @@ The diagrams also live in [`flows.md`](flows.md).
 
 One-compartment exponential decay, `remaining = dose × 0.5^(hours / halfLife)`, summed over every drink. The half-life defaults to 5 h (adjustable from 2 to 10 h, since people vary). Absorption is treated as instant. The 50 mg sleep line is an adjustable heuristic, not medical advice. The 400 mg/day figure is the FDA's reference for most adults. Sources for every drink's mg value are in [`src/lib/drinks.ts`](src/lib/drinks.ts) and [`research.md`](research.md).
 
+## Accessibility
+
+- **Keyboard:** every control is a real `<button>`, `<a>` or `<input>`. Tab order on Now: sleep time → drink chips → Other → history → nav. A 3px amber focus ring shows on every one (checked in headless Chrome, 16–17 Oct 2026).
+- **Labels:** every input has a `<label for>`. Hints and errors are tied to their input with `aria-describedby`, and invalid fields get `aria-invalid`. On a failed submit, focus moves to the first field to fix, and nothing typed is cleared.
+- **Live updates:** the hero number and the "Logged …, Undo" line are `aria-live="polite"`. Each chip's accessible name says what it adds at sleep.
+- **Contrast** (WCAG formula, computed by script, not eyeballed):
+
+| Pair | Ratio | Needs |
+|---|---|---|
+| text `#E8DCCB` on bg `#14110F` | 13.9 | 4.5 |
+| muted `#A8998A` on bg | 6.8 | 4.5 |
+| muted on raised `#2A231D` | 5.6 | 4.5 |
+| amber `#F2A541` on bg | 9.2 | 4.5 |
+| coral `#E0705A` on bg / raised | 5.9 / 4.9 | 4.5 |
+| bg on amber (primary button) | 9.2 | 4.5 |
+| input edge `#7A6B5D` on surface `#1F1A16` | 3.4 | 3 (UI) |
+
 ## Run it
 
 ```bash
