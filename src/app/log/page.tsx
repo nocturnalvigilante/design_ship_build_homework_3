@@ -8,7 +8,7 @@ import { Field } from "@/components/Field";
 import { Loading, Screen } from "@/components/Screen";
 import { HOUR } from "@/lib/caffeine";
 import { drinkOptions } from "@/lib/options";
-import { newId, useLastCup, type LastCupState } from "@/lib/storage";
+import { announceLogged, newId, useLastCup, type LastCupState } from "@/lib/storage";
 
 const MAX_MG = 1000;
 
@@ -92,14 +92,16 @@ function LogForm({
 
     const drinkName = name.trim();
     const isKnown = options.some((o) => o.name.toLowerCase() === drinkName.toLowerCase());
+    const drink = { id: newId(), name: drinkName, mg: result.mg!, at: result.at! };
     update((s) => ({
       ...s,
-      drinks: [...s.drinks, { id: newId(), name: drinkName, mg: result.mg!, at: result.at! }],
+      drinks: [...s.drinks, drink],
       customDrinks:
         remember && !isKnown
           ? [{ key: `custom-${newId()}`, name: drinkName, mg: result.mg! }, ...s.customDrinks]
           : s.customDrinks,
     }));
+    announceLogged(drink);
     router.push("/");
   }
 

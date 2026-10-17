@@ -130,3 +130,21 @@ export function useLastCup() {
 export function newId() {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 }
+
+/**
+ * A drink just logged on another route (the /log form), so Now can confirm it
+ * with the same "Logged …, Undo" line a chip gets. In memory only, on purpose.
+ */
+let justLoggedElsewhere: LoggedDrink | null = null;
+
+export function announceLogged(drink: LoggedDrink) {
+  justLoggedElsewhere = drink;
+}
+
+export function peekLogged() {
+  return justLoggedElsewhere;
+}
+
+export function clearLogged() {
+  justLoggedElsewhere = null;
+}

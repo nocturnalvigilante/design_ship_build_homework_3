@@ -16,9 +16,10 @@ import {
   doseRemaining,
   drunkInLast24h,
   remainingAt,
+  type LoggedDrink,
 } from "@/lib/caffeine";
 import { drinkOptions } from "@/lib/options";
-import { newId, useLastCup } from "@/lib/storage";
+import { clearLogged, newId, peekLogged, useLastCup } from "@/lib/storage";
 import { clock, fromNow, useNow } from "@/lib/time";
 
 export default function NowPage() {
@@ -27,7 +28,21 @@ export default function NowPage() {
   const tick = useNow();
   // The clock ticks every 30 s, but a drink logged a moment ago must count as drunk.
   const now = Math.max(tick, ...(state?.drinks.map((d) => d.at) ?? []));
-  const [justLogged, setJustLogged] = useState<{ id: string; name: string } | null>(null);
+  // The "Logged …, Undo" / "Removed …, Undo" line, for chips, the /log form and Remove alike.
+  const [toast, setToast] = useState<{ text: string; undo: () => void } | null>(null);
+
+  function drop(id: string) {
+    update((s) => ({ ...s, drinks: s.drinks.filter((d) => d.id !== id) }));
+    setToast(null);
+  }
+
+  useEffect(() => {
+    const fromForm = peekLogged();
+    if (!fromForm) return;
+    clearLogged();
+    setToast({ text: `Logged ${fromForm.name}, ${fromForm.mg} mg.`, undo: () => drop(fromForm.id) });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // No upcoming sleep yet (first visit, or the last one passed): ask first.
   const needsSleep = state !== null && (state.nextSleep === null || state.nextSleep <= now);
@@ -57,12 +72,18 @@ export default function NowPage() {
   function log(name: string, mg: number) {
     const id = newId();
     update((s) => ({ ...s, drinks: [...s.drinks, { id, name, mg, at: Date.now() }] }));
-    setJustLogged({ id, name });
+    setToast({ text: `Logged ${name}, ${mg} mg.`, undo: () => drop(id) });
   }
 
-  function remove(id: string) {
-    update((s) => ({ ...s, drinks: s.drinks.filter((d) => d.id !== id) }));
-    setJustLogged(null);
+  function remove(drink: LoggedDrink) {
+    drop(drink.id);
+    setToast({
+      text: `Removed ${drink.name}.`,
+      undo: () => {
+        update((s) => ({ ...s, drinks: [...s.drinks, drink] }));
+        setToast(null);
+      },
+    });
   }
 
   return (
@@ -97,10 +118,10 @@ export default function NowPage() {
 
       <section aria-label="Log a drink" className="mt-4">
         <div className="mb-3 flex min-h-12 items-center justify-between gap-3" aria-live="polite">
-          {justLogged ? (
+          {toast ? (
             <>
-              <p>Logged {justLogged.name}.</p>
-              <Button variant="ghost" className="px-3" onClick={() => remove(justLogged.id)}>
+              <p className="tabular-nums">{toast.text}</p>
+              <Button variant="ghost" className="px-3" onClick={toast.undo}>
                 Undo
               </Button>
             </>
@@ -168,7 +189,7 @@ export default function NowPage() {
                 <Button
                   variant="ghost"
                   className="px-3 text-sm"
-                  onClick={() => remove(d.id)}
+                  onClick={() => remove(d)}
                   aria-label={`Remove ${d.name} at ${clock(d.at)}`}
                 >
                   Remove
