@@ -20,6 +20,8 @@ export function Field({ label, error, hint, suffix, className = "", ...input }: 
     <div className={`flex flex-col gap-2 ${className}`}>
       <label htmlFor={id} className="text-base font-medium text-text">
         {label}
+        {/* The visible unit sits inside the input and is hidden from screen readers, so say it here. */}
+        {suffix && <span className="sr-only">, in {suffix}</span>}
       </label>
       <div className="relative">
         <input
