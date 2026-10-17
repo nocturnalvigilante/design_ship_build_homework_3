@@ -21,7 +21,7 @@ Worked out in plan mode on 16 October 2026. The agent proposed the steps, states
 flowchart TD
   A([Open Last Cup]) --> B{Anything saved?}
   B -- no --> C["/sleep<br/>When are you sleeping next?<br/>suggested time preselected"]
-  C -- time in the past --> E1["Error next to field:<br/>That's already passed. Pick your next sleep."]
+  C -- no time picked --> E1["Error next to field:<br/>Pick a time, like 09:00. Any hour works."]
   E1 --> C
   C -- Save --> D["/ Now<br/>0 mg at your 9:00 sleep<br/>drink chips at the bottom"]
   D --> F["Each chip shows its impact<br/>+30 mg at sleep"]
@@ -42,8 +42,9 @@ flowchart TD
   L -- mg missing / not a number --> L1[Enter the caffeine in mg, it's on the can.]
   L -- mg over 1000 --> L2[That's more than any single drink we know.]
   L -- time in the future --> L3[That time hasn't happened yet.]
+  L -- over a day ago --> L5[That won't change your next sleep. Pick a time in the last 24 hours.]
   L -- name empty --> L4[Name it so it shows up as a chip next time.]
-  L1 & L2 & L3 & L4 --> L
+  L1 & L2 & L3 & L4 & L5 --> L
   L -- Save --> A
   A -. over 400 mg today .-> N[Muted note: past the FDA's 400 mg day reference]
 ```
@@ -67,4 +68,5 @@ flowchart TD
 - **Chip would cross the threshold:** the chip's preview turns coral before you tap.
 - **Returning, sleep passed:** welcome-back summary and a one-tap "Same time".
 - **Returning, sleep ahead:** straight to Now.
-- **Past 400 mg today:** a muted note (reference, not advice).
+- **Past 400 mg in 24 h:** a muted note (reference, not advice).
+- **Sleep times can't be in the past:** "9:00" means the next time the clock reads 9:00, and the hint spells it out ("That's 9:00 tomorrow, in 7 h"). That removed an error we'd planned, which is simpler than catching it.
