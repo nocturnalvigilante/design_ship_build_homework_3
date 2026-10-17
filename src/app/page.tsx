@@ -1,19 +1,30 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Button } from "@/components/Button";
 import { DecayCurve } from "@/components/DecayCurve";
+import { DrinkChip } from "@/components/DrinkChip";
 import { HeroNumber } from "@/components/HeroNumber";
 import { Notice } from "@/components/Notice";
 import { Loading, Screen } from "@/components/Screen";
-import { DAILY_REFERENCE_MG, clearBy, drunkInLast24h, remainingAt } from "@/lib/caffeine";
-import { useLastCup } from "@/lib/storage";
+import {
+  DAILY_REFERENCE_MG,
+  HOUR,
+  clearBy,
+  doseRemaining,
+  drunkInLast24h,
+  remainingAt,
+} from "@/lib/caffeine";
+import { drinkOptions } from "@/lib/options";
+import { newId, useLastCup } from "@/lib/storage";
 import { clock, fromNow, useNow } from "@/lib/time";
 
 export default function NowPage() {
   const router = useRouter();
-  const { state } = useLastCup();
+  const { state, update } = useLastCup();
   const now = useNow();
+  const [justLogged, setJustLogged] = useState<{ id: string; name: string } | null>(null);
 
   // No upcoming sleep yet (first visit, or the last one passed): ask first.
   const needsSleep = state !== null && (state.nextSleep === null || state.nextSleep <= now);
@@ -35,6 +46,21 @@ export default function NowPage() {
   const over = atSleep > thresholdMg;
   const clear = clearBy(drinks, now, halfLifeH, thresholdMg);
   const today = drunkInLast24h(drinks, now);
+  const options = drinkOptions(state).slice(0, 5);
+  const recent = drinks
+    .filter((d) => d.at > now - 24 * HOUR)
+    .sort((a, b) => b.at - a.at);
+
+  function log(name: string, mg: number) {
+    const id = newId();
+    update((s) => ({ ...s, drinks: [...s.drinks, { id, name, mg, at: Date.now() }] }));
+    setJustLogged({ id, name });
+  }
+
+  function remove(id: string) {
+    update((s) => ({ ...s, drinks: s.drinks.filter((d) => d.id !== id) }));
+    setJustLogged(null);
+  }
 
   return (
     <Screen title="Now" hideTitle>
@@ -69,6 +95,72 @@ export default function NowPage() {
           </Notice>
         </div>
       )}
+
+      {recent.length > 0 && (
+        <section aria-labelledby="recent" className="mt-6">
+          <h2 id="recent" className="mb-2 text-sm font-medium text-muted">
+            Last 24 hours
+          </h2>
+          <ul className="divide-y divide-line rounded-xl border border-line">
+            {recent.map((d) => (
+              <li key={d.id} className="flex items-center justify-between gap-3 py-1 pr-1 pl-4">
+                <span className="tabular-nums">
+                  <span className="text-muted">{clock(d.at)}</span> {d.name}{" "}
+                  <span className="text-muted">
+                    {d.mg} mg, {Math.round(doseRemaining(d.mg, d.at, now, halfLifeH))} left
+                  </span>
+                </span>
+                <Button
+                  variant="ghost"
+                  className="px-3 text-sm"
+                  onClick={() => remove(d.id)}
+                  aria-label={`Remove ${d.name} at ${clock(d.at)}`}
+                >
+                  Remove
+                </Button>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <section aria-labelledby="add" className="mt-auto pt-8">
+        <div aria-live="polite" className="min-h-12">
+          {justLogged && (
+            <p className="flex items-center justify-between rounded-xl bg-raised py-1 pr-1 pl-4">
+              <span>Logged {justLogged.name}.</span>
+              <Button variant="ghost" className="px-3" onClick={() => remove(justLogged.id)}>
+                Undo
+              </Button>
+            </p>
+          )}
+        </div>
+        <h2 id="add" className="mt-2 mb-3 font-display text-lg font-semibold">
+          Just had something?
+        </h2>
+        <div className="grid grid-cols-3 gap-2">
+          {options.map((o) => {
+            const adds = Math.round(doseRemaining(o.mg, now, sleep, halfLifeH));
+            return (
+              <DrinkChip
+                key={o.key}
+                name={o.name}
+                mg={o.mg}
+                addsAtSleep={adds}
+                wouldCross={atSleep + adds > thresholdMg}
+                onLog={() => log(o.name, o.mg)}
+              />
+            );
+          })}
+          <Button
+            href="/log"
+            variant="secondary"
+            className="min-h-16 rounded-xl px-3 text-base"
+          >
+            Other…
+          </Button>
+        </div>
+      </section>
     </Screen>
   );
 }
