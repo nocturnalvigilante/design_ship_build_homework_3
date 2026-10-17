@@ -38,6 +38,8 @@ export function DecayCurve({
   const area = `${line}L${x(end).toFixed(1)},${base}L${x(start).toFixed(1)},${base}Z`;
   const nowMg = points.reduce((a, b) => (Math.abs(b.t - now) < Math.abs(a.t - now) ? b : a)).mg;
   const sleepColor = over ? "var(--color-coral)" : "var(--color-amber)";
+  // With sleep close by, "now" would print over "sleep 9:00"; the dot alone marks now then.
+  const showNowLabel = Math.abs(x(sleep) - x(now)) > 46;
 
   return (
     <svg viewBox={`0 0 ${W} ${H}`} className="w-full" aria-hidden="true">
@@ -57,9 +59,11 @@ export function DecayCurve({
 
       <line x1={PAD.left} x2={W - PAD.right} y1={base} y2={base} stroke="var(--color-line)" />
       <circle cx={x(now)} cy={y(nowMg)} r="5" fill="var(--color-amber)" stroke="var(--color-bg)" strokeWidth="2" />
-      <text x={x(now)} y={H - 8} textAnchor="middle" fontSize="11" fill="var(--color-muted)">
-        now
-      </text>
+      {showNowLabel && (
+        <text x={x(now)} y={H - 8} textAnchor="middle" fontSize="11" fill="var(--color-muted)">
+          now
+        </text>
+      )}
     </svg>
   );
 }
