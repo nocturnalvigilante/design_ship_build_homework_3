@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- A cup on the night background: tokens bg #14110F, amber #F2A541. -->
+  <rect width="32" height="32" rx="7" fill="#14110F"/>
+  <path d="M7 11h15v7a6 6 0 0 1-6 6h-3a6 6 0 0 1-6-6z" fill="#F2A541"/>
+  <path d="M22 13h2a3 3 0 0 1 0 6h-2" fill="none" stroke="#F2A541" stroke-width="2"/>
+  <path d="M12 5c-1 1.5 1 2.5 0 4M17 5c-1 1.5 1 2.5 0 4" fill="none" stroke="#A8998A" stroke-width="1.5" stroke-linecap="round"/>
+</svg>
