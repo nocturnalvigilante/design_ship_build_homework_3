@@ -21,18 +21,21 @@ function toLocalInput(ms: number) {
 }
 
 function validate(
-  values: { name: string; mg: string; at: string },
+  values: { name: string; mg: string; at: string; remember: boolean },
   now: number,
 ): { errors: Errors; mg?: number; at?: number } {
   const errors: Errors = {};
 
-  if (!values.name.trim()) {
-    errors.name = "Name it so it shows up as a chip next time, e.g. “Night coffee”.";
+  // A one-off doesn't need a name; one saved as a chip does.
+  if (!values.name.trim() && values.remember) {
+    errors.name = "Name it to keep it as a one-tap drink, e.g. “Night coffee”. Or untick the box below.";
   }
 
-  const mg = Number(values.mg.replace(/mg/i, "").trim());
-  if (!values.mg.trim() || !Number.isFinite(mg) || mg <= 0) {
-    errors.mg = "Enter the caffeine in mg, it’s on the can.";
+  // Tired typing like "180mg large" still means 180.
+  const leading = /^\s*(\d+(?:\.\d+)?)/.exec(values.mg);
+  const mg = leading ? Number(leading[1]) : NaN;
+  if (!Number.isFinite(mg) || mg <= 0) {
+    errors.mg = "Enter just the number of mg, like 180. It’s on the can or the café’s menu.";
   } else if (mg > MAX_MG) {
     errors.mg = `That’s more than any single drink we know. Check the mg, or log it as two drinks.`;
   }
@@ -80,7 +83,7 @@ function LogForm({
   function onSubmit(e: FormEvent) {
     e.preventDefault();
     const now = Date.now();
-    const result = validate({ name, mg, at }, now);
+    const result = validate({ name, mg, at, remember }, now);
     setErrors(result.errors);
 
     const first = (["name", "mg", "at"] as const).find((k) => result.errors[k]);
@@ -90,14 +93,14 @@ function LogForm({
       return;
     }
 
-    const drinkName = name.trim();
+    const drinkName = name.trim() || "Drink";
     const isKnown = options.some((o) => o.name.toLowerCase() === drinkName.toLowerCase());
     const drink = { id: newId(), name: drinkName, mg: result.mg!, at: result.at! };
     update((s) => ({
       ...s,
       drinks: [...s.drinks, drink],
       customDrinks:
-        remember && !isKnown
+        remember && name.trim() && !isKnown
           ? [{ key: `custom-${newId()}`, name: drinkName, mg: result.mg! }, ...s.customDrinks]
           : s.customDrinks,
     }));
@@ -136,6 +139,7 @@ function LogForm({
           name="name"
           autoComplete="off"
           placeholder="e.g. Night coffee"
+          hint="Optional for a one-off."
           value={name}
           onChange={(e) => setName(e.target.value)}
           error={errors.name}
@@ -145,7 +149,6 @@ function LogForm({
           name="mg"
           inputMode="numeric"
           suffix="mg"
-          placeholder="80"
           value={mg}
           onChange={(e) => setMg(e.target.value)}
           error={errors.mg}
@@ -159,7 +162,7 @@ function LogForm({
           max={toLocalInput(Date.now())}
           onChange={(e) => setAt(e.target.value)}
           error={errors.at}
-          hint="Leave it as now if you just did."
+          hint="When you started drinking it; close enough is fine. Leave it as now if you just did."
         />
 
         <label className="flex min-h-11 items-center gap-3 text-base">

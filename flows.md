@@ -39,11 +39,11 @@ flowchart TD
   D -- yes --> F[Hero coral: over your 50 mg line<br/>+ clear by HH:MM]
   E & F --> U[Undo available on the new entry]
   B -- no --> L["/log<br/>name · mg · when you started it"]
-  L -- mg missing / not a number --> L1[Enter the caffeine in mg, it's on the can.]
+  L -- mg missing / not a number --> L1[Enter just the number of mg, like 180.]
   L -- mg over 1000 --> L2[That's more than any single drink we know.]
   L -- time in the future --> L3[That time hasn't happened yet.]
   L -- over a day ago --> L5[That won't change your next sleep. Pick a time in the last 24 hours.]
-  L -- name empty --> L4[Name it so it shows up as a chip next time.]
+  L -- name empty, saving as a chip --> L4[Name it to keep it as a one-tap drink. Or untick the box.]
   L1 & L2 & L3 & L4 & L5 --> L
   L -- Save --> A
   A -. over 400 mg today .-> N[Muted note: past the FDA's 400 mg day reference]
