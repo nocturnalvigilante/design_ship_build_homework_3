@@ -54,7 +54,7 @@ Every item is taken from the brief. An item is ticked only once it has been **ve
 | D3 | Code in your own GitHub repo | ☑ github.com/nocturnalvigilante/design_ship_build_homework_3 |
 | D4 | Deployed on Vercel's free Hobby plan | ☑ https://design-ship-build-homework-3.vercel.app, auto-deploys from `main` |
 | D5 | Pushed back on any unneeded database, backend or package | ☑ README → What we said no to: no chart library, date library, backend or accounts; runtime deps are only `next`, `react`, `react-dom` |
-| D6 | `AGENTS.md` is the context file; no `CLAUDE.md`; checked with `/context` that `AGENTS.md` loaded | ☐ `AGENTS.md` written, no `CLAUDE.md`; `/context` check still to do |
+| D6 | `AGENTS.md` is the context file; no `CLAUDE.md`; checked with `/context` that `AGENTS.md` loaded | ☑ No `CLAUDE.md`; `/context` on 17 Oct lists `~/projects/dbs-a3/AGENTS.md` (1.3k tokens) under Memory files |
 
 ## E. Be ready to explain
 
