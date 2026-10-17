@@ -13,7 +13,8 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Last Cup",
+  // Each route sets its own title, so the tab and screen readers say where you are.
+  title: { default: "Last Cup", template: "%s · Last Cup" },
   description:
     "See how much caffeine will still be in you when you next sleep, whatever time of day that is.",
 };
