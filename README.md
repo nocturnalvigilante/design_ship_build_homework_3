@@ -117,7 +117,8 @@ One-compartment exponential decay, `remaining = dose × 0.5^(hours / halfLife)`,
 
 - **Keyboard:** every control is a real `<button>`, `<a>` or `<input>`. Tab order on Now: sleep time → drink chips → Other → history → nav. A 3px amber focus ring shows on every one (checked in headless Chrome, 16–17 Oct 2026).
 - **Labels:** every input has a `<label for>`. Hints and errors are tied to their input with `aria-describedby`, and invalid fields get `aria-invalid`. On a failed submit, focus moves to the first field to fix, and nothing typed is cleared.
-- **Live updates:** the hero number and the "Logged …, Undo" line are `aria-live="polite"`. Each chip's accessible name says what it adds at sleep.
+- **Live updates:** the hero number and the "Logged / Removed …, Undo" line are `aria-live="polite"`. Each chip's accessible name says what it adds at sleep.
+- **Structure:** each route has its own page title ("Log a drink · Last Cup") and one `<h1>`. Units shown inside inputs ("mg") are also in the label for screen readers ("Caffeine, in mg").
 - **Contrast** (WCAG formula, computed by script, not eyeballed):
 
 | Pair | Ratio | Needs |
@@ -129,6 +130,53 @@ One-compartment exponential decay, `remaining = dose × 0.5^(hours / halfLife)`,
 | coral `#E0705A` on bg / raised | 5.9 / 4.9 | 4.5 |
 | bg on amber (primary button) | 9.2 | 4.5 |
 | input edge `#7A6B5D` on surface `#1F1A16` | 3.4 | 3 (UI) |
+
+## First-run check
+
+On 17 October 2026 a fresh subagent used the **deployed URL** as a brand-new user. It didn't read the code. It drove headless Chrome at phone size (390×844), with the timezone set so the local time was 2:45am.
+
+**Its persona and goal:** a night-shift ICU nurse at 2:45am who has just finished a Red Bull, sleeps at 9:00 after the shift, and wants to know whether that Red Bull will wreck their sleep. Later they buy a 180 mg café coffee that isn't a preset. They come back on the next shift.
+
+**What happened:**
+- **First visit:** the sleep time was already filled in as 09:00. Tapping Next, then Red Bull, showed **"34 mg still in you at your 9:00 sleep"**. That's 2 taps and about 10 seconds. The tester checked the maths by hand (80 × 0.5^(6.25/5) ≈ 34).
+- **Main task:** a tired "180mg large" with a blank name gave two errors, each under its field, and kept what was typed. A typo of "1800" was caught. After the coffee, the hero turned coral: 110 mg, clear by 14:40.
+- **Coming back:** all saved times were moved back 22 h. The app opened on "Welcome back. Last shift: 2 drinks, 110 mg", and one tap got back to Now with the drinks and the custom coffee chip still there.
+
+**Its feedback, and what changed:**
+
+| Feedback (most important first) | Change |
+|---|---|
+| "Log drink" is half hidden behind the bottom nav, and fully hidden once an error appears | A shared `ActionBar` pins the main action above the nav on both forms (`08a0b2d`) |
+| Chips show "+34 at sleep" but never the dose, so someone with a bigger can can't tell the app assumed 80 mg | Each chip shows its mg (`6d127a5`) |
+| The "now" dot sits at 0 mg right after a drink, while the curve jumps to 80 | The dot is placed at the exact current total, and doses draw as steps (`24d2281`) |
+| Coral chips are never explained | A one-line key under the chips (`6d127a5`) |
+| Logging from the form gives no confirmation; Remove deletes with no undo | One "Logged / Removed …, Undo" line for all three (`9521e38`) |
+| "180mg large" is rejected though the number is right there | The leading number is read; the error now says "Enter just the number of mg, like 180" (`e9233e5`) |
+| A one-off drink shouldn't need a name | The name is only required when saving it as a chip (`e9233e5`) |
+| Nothing shows how much is in me *now* | "Last 24 hours: 260 mg drunk, 260 mg in you now", seen right after both drinks (`9c675bd`) |
+| "4:48" on the next shift doesn't say it was yesterday | "yesterday 4:48" (`9c675bd`) |
+| "Same time" next to "Save sleep time" is unclear; the intro sits above the question | "Same as last time" vs "Use the time above"; the question comes first (`a3f9500`) |
+| The caveats are only in Settings | "An estimate, not medical advice…" under the curve, linking to Adjust (`993485f`) |
+| The "1"s in the hero look like stray strokes | Proportional figures for the hero (`5300d25`) |
+| The focus ring on the Now tab is clipped by the screen edge | The ring is drawn inside the tab (`5405945`, `033ecf5`) |
+| Settings save silently | "Changes save as you make them." (`ad8e281`) |
+| The 80 mg placeholder looks pre-filled | Removed (`e9233e5`) |
+
+**Not changed:** adding a custom chip pushes the fifth built-in (Espresso) to "More drinks" on /log. That's intended: the grid shows the five drinks you use most.
+
+**Re-check:** the same scenarios were run again against a production build of the fixed code (`next start` on fe02), with screenshots, before pushing.
+
+## How this was built with an agent
+
+- **Plan mode first:** the main task as one sentence, then the agent proposed steps, states and errors, and we picked from them. That's the source of [`flows.md`](flows.md).
+- **Subagents for research:** four ran in parallel (three tools and night-time visual design), then the decision was written down in [`research.md`](research.md).
+- **[`AGENTS.md`](AGENTS.md) as the context file:** it records the brief's hard rules (no backend, no new packages, shared components, error wording) and the design tokens, so every session started from them.
+- **Checking instead of trusting:** contrast was computed by script, keyboard order and the flows were checked in headless Chrome, and [`CHECKLIST.md`](CHECKLIST.md) only gets a tick once something is verified.
+- **Easy:** small, single-purpose commits, and building the shared components first.
+- **Hard:**
+  - The fonts weren't loading at first, which only showed up on a real render (`86f8e05`).
+  - A drink logged within 30 s of the clock tick didn't count yet (`84fa5de`).
+  - The first-run tester's own browser was killed before `localStorage` reached disk, which looked like an app bug until it was traced.
 
 ## Run it
 
