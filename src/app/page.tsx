@@ -95,130 +95,137 @@ export default function NowPage() {
   }
 
   return (
-    <Screen title="Now" hideTitle>
-      <HeroNumber mg={atSleep} sleep={sleep} now={now} over={over} />
+    <Screen title="Now" hideTitle wide>
+      <div className="lg:grid lg:grid-cols-[1.1fr_1fr] lg:items-start lg:gap-14">
+        <div className="lg:sticky lg:top-8">
+          <HeroNumber mg={atSleep} sleep={sleep} now={now} over={over} />
 
-      <p className={`mt-2 text-base tabular-nums ${over ? "text-coral" : "text-muted"}`}>
-        {clear <= now
-          ? `You're under your ${thresholdMg} mg line now.`
-          : over
-            ? `Over your ${thresholdMg} mg line at sleep. Clear by ${clock(clear)}, ${fromNow(clear, sleep).replace("in ", "")} after your sleep time.`
-            : `Under ${thresholdMg} mg by ${clock(clear)}, before you sleep.`}
-      </p>
+          <p className={`mt-2 text-base tabular-nums ${over ? "text-coral" : "text-muted"}`}>
+            {recent.length === 0
+              ? "Nothing logged yet. Tap what you’re drinking to see what it leaves at sleep."
+              : clear <= now
+              ? `You're under your ${thresholdMg} mg line now.`
+              : over
+                ? `Over your ${thresholdMg} mg line at sleep. Clear by ${clock(clear)}, ${fromNow(clear, sleep).replace("in ", "")} after your sleep time.`
+                : `Under ${thresholdMg} mg by ${clock(clear)}, before you sleep.`}
+          </p>
 
-      <div className="mt-6">
-        <DecayCurve
-          drinks={drinks}
-          now={now}
-          sleep={sleep}
-          halfLifeH={halfLifeH}
-          thresholdMg={thresholdMg}
-          over={over}
-        />
-        <p className="mt-1 text-sm text-muted tabular-nums">
-          An estimate, not medical advice: {halfLifeH} h half-life, counted from when you start
-          drinking.{" "}
-          <Link href="/settings" className="text-text underline decoration-edge underline-offset-4 hover:decoration-amber">
-            Adjust
-          </Link>
-        </p>
-      </div>
+          <div className="mt-6">
+            <DecayCurve
+              drinks={drinks}
+              now={now}
+              sleep={sleep}
+              halfLifeH={halfLifeH}
+              thresholdMg={thresholdMg}
+              over={over}
+            />
+            <p className="mt-1 text-sm text-muted tabular-nums">
+              An estimate, not medical advice: {halfLifeH} h half-life, counted from when you start
+              drinking.{" "}
+              <Link href="/settings" className="text-text underline decoration-edge underline-offset-4 hover:decoration-amber">
+                Adjust
+              </Link>
+            </p>
+          </div>
+        </div>
 
-      <section aria-label="Log a drink" className="mt-4">
-        <div className="mb-3 flex min-h-12 items-center justify-between gap-3" aria-live="polite">
-          {toast ? (
-            <>
-              <p className="tabular-nums">{toast.text}</p>
-              <Button variant="ghost" className="px-3" onClick={toast.undo}>
-                Undo
+        <div>
+          <section aria-label="Log a drink" className="mt-4 lg:mt-2">
+            <div className="mb-3 flex min-h-12 items-center justify-between gap-3" aria-live="polite">
+              {toast ? (
+                <>
+                  <p className="tabular-nums">{toast.text}</p>
+                  <Button variant="ghost" className="px-3" onClick={toast.undo}>
+                    Undo
+                  </Button>
+                </>
+              ) : (
+                <h2 id="add" className="font-display text-lg font-semibold">
+                  Just had something?
+                </h2>
+              )}
+            </div>
+            <div className="grid grid-cols-3 gap-2">
+              {options.map((o) => {
+                const adds = Math.round(doseRemaining(o.mg, now, sleep, halfLifeH));
+                return (
+                  <DrinkChip
+                    key={o.key}
+                    name={o.name}
+                    mg={o.mg}
+                    addsAtSleep={adds}
+                    wouldCross={atSleep + adds > thresholdMg}
+                    onLog={() => log(o.name, o.mg)}
+                  />
+                );
+              })}
+              <Button
+                href="/log"
+                variant="secondary"
+                className="min-h-16 rounded-xl px-3 text-base"
+              >
+                Other…
               </Button>
-            </>
-          ) : (
-            <h2 id="add" className="font-display text-lg font-semibold">
-              Just had something?
-            </h2>
+            </div>
+            {over ? (
+              <p className="mt-2 text-sm text-muted">
+                You&rsquo;re already over your {thresholdMg} mg line at sleep, so each one adds to it.
+              </p>
+            ) : (
+              options.some((o) => atSleep + Math.round(doseRemaining(o.mg, now, sleep, halfLifeH)) > thresholdMg) && (
+                <p className="mt-2 text-sm text-muted">
+                  <span className="text-coral">Coral</span> ones would put you over your {thresholdMg} mg
+                  line at sleep.
+                </p>
+              )
+            )}
+          </section>
+
+          {today > DAILY_REFERENCE_MG && (
+            <div className="mt-4">
+              <Notice>
+                <span className="tabular-nums">
+                  {today} mg in the last 24 h, past the FDA&rsquo;s {DAILY_REFERENCE_MG} mg daily
+                  reference for most adults.
+                </span>
+              </Notice>
+            </div>
+          )}
+
+          {recent.length > 0 && (
+            <section aria-labelledby="recent" className="mt-8">
+              <h2 id="recent" className="mb-2 text-sm font-medium text-muted tabular-nums">
+                Last 24 hours: {today} mg drunk, {Math.round(remainingAt(drinks, now, halfLifeH))} mg
+                in you now
+              </h2>
+              <ul className="divide-y divide-line rounded-xl border border-line">
+                {recent.map((d) => (
+                  <li key={d.id} className="flex items-center justify-between gap-3 py-1 pr-1 pl-4">
+                    <span className="tabular-nums">
+                      <span className="text-muted">
+                        {dayLabel(d.at, now) === "today" ? "" : `${dayLabel(d.at, now)} `}
+                        {clock(d.at)}
+                      </span>{" "}
+                      {d.name}{" "}
+                      <span className="text-muted">
+                        {d.mg} mg, {Math.round(doseRemaining(d.mg, d.at, now, halfLifeH))} left
+                      </span>
+                    </span>
+                    <Button
+                      variant="ghost"
+                      className="px-3 text-sm"
+                      onClick={() => remove(d)}
+                      aria-label={`Remove ${d.name} at ${clock(d.at)}`}
+                    >
+                      Remove
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+            </section>
           )}
         </div>
-        <div className="grid grid-cols-3 gap-2">
-          {options.map((o) => {
-            const adds = Math.round(doseRemaining(o.mg, now, sleep, halfLifeH));
-            return (
-              <DrinkChip
-                key={o.key}
-                name={o.name}
-                mg={o.mg}
-                addsAtSleep={adds}
-                wouldCross={atSleep + adds > thresholdMg}
-                onLog={() => log(o.name, o.mg)}
-              />
-            );
-          })}
-          <Button
-            href="/log"
-            variant="secondary"
-            className="min-h-16 rounded-xl px-3 text-base"
-          >
-            Other…
-          </Button>
-        </div>
-        {over ? (
-          <p className="mt-2 text-sm text-muted">
-            You&rsquo;re already over your {thresholdMg} mg line at sleep, so each one adds to it.
-          </p>
-        ) : (
-          options.some((o) => atSleep + Math.round(doseRemaining(o.mg, now, sleep, halfLifeH)) > thresholdMg) && (
-            <p className="mt-2 text-sm text-muted">
-              <span className="text-coral">Coral</span> ones would put you over your {thresholdMg} mg
-              line at sleep.
-            </p>
-          )
-        )}
-      </section>
-
-      {today > DAILY_REFERENCE_MG && (
-        <div className="mt-4">
-          <Notice>
-            <span className="tabular-nums">
-              {today} mg in the last 24 h, past the FDA&rsquo;s {DAILY_REFERENCE_MG} mg daily
-              reference for most adults.
-            </span>
-          </Notice>
-        </div>
-      )}
-
-      {recent.length > 0 && (
-        <section aria-labelledby="recent" className="mt-8">
-          <h2 id="recent" className="mb-2 text-sm font-medium text-muted tabular-nums">
-            Last 24 hours: {today} mg drunk, {Math.round(remainingAt(drinks, now, halfLifeH))} mg
-            in you now
-          </h2>
-          <ul className="divide-y divide-line rounded-xl border border-line">
-            {recent.map((d) => (
-              <li key={d.id} className="flex items-center justify-between gap-3 py-1 pr-1 pl-4">
-                <span className="tabular-nums">
-                  <span className="text-muted">
-                    {dayLabel(d.at, now) === "today" ? "" : `${dayLabel(d.at, now)} `}
-                    {clock(d.at)}
-                  </span>{" "}
-                  {d.name}{" "}
-                  <span className="text-muted">
-                    {d.mg} mg, {Math.round(doseRemaining(d.mg, d.at, now, halfLifeH))} left
-                  </span>
-                </span>
-                <Button
-                  variant="ghost"
-                  className="px-3 text-sm"
-                  onClick={() => remove(d)}
-                  aria-label={`Remove ${d.name} at ${clock(d.at)}`}
-                >
-                  Remove
-                </Button>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
+      </div>
     </Screen>
   );
 }
