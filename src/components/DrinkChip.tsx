@@ -23,7 +23,7 @@ export function DrinkChip({
         wouldCross ? ", which puts you over your line" : ""
       }.`}
       className={`flex min-h-16 flex-col items-start justify-center rounded-xl border bg-surface px-3 py-2 text-left hover:bg-raised ${
-        wouldCross ? "border-coral/70" : "border-line"
+        wouldCross ? "border-coral" : "border-edge"
       }`}
     >
       <span className="text-base leading-tight font-semibold text-text">{name}</span>
