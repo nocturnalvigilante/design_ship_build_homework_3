@@ -15,7 +15,7 @@ Every item is taken from the brief. An item is ticked only once it has been **ve
 | A7 | Keyboard access, real labels, text contrast checked with the agent | README → Accessibility: tab order and focus ring checked in headless Chrome; labels + aria-describedby; contrast computed by script | ☑ |
 | A8 | First-run check in `README.md`: the agent's usability feedback | README → First-run check: persona, what happened, 15 feedback items each mapped to the commit that fixed it | ☑ |
 | A9 | A GitHub repo with commits that show progress (not one-shot) | github.com/nocturnalvigilante/design_ship_build_homework_3, small commits from the first flow to the fixes | ☑ |
-| A10 | Ready to explain the work in class (section E) | Talking points mapped in section E; rehearsing is on you | ☐ |
+| A10 | Ready to explain the work in class (section E) | Talking points in [`TALK.md`](TALK.md), one section per question; rehearsing is on you | ☐ |
 
 ## B. Steps
 
