@@ -21,7 +21,7 @@ The five things the brief says to be ready to explain. About a minute each. Open
 ## 3. Retention: what brings someone back, and what it remembers
 
 - **The trigger is real:** every shift you're deciding "can I have another coffee?" That's the moment to open it.
-- **Coming back after your sleep:** "Welcome back. Last time: 2 drinks, and 93 mg still in you when you slept yesterday at 9:00 AM." Then a bar per recent sleep: "Over your 50 mg line at 4 of your last 6 sleeps." That pattern is the reason to keep logging.
+- **Coming back after your sleep:** "Welcome back. Last time: 2 drinks, and 96 mg still in you when you slept yesterday at 9:00 AM." Then a bar per recent sleep: "Over your 50 mg line at 4 of your last 6 sleeps." That pattern is the reason to keep logging.
 - **One tap:** "Same as last time: 9:00 AM today".
 - **What it remembers, in localStorage only:** drinks for 30 days, the last 14 sleeps, the next sleep, the half-life and sleep line, custom one-tap drinks (most-used float to the front), and even a half-typed form.
 

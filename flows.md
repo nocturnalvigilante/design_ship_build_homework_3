@@ -78,7 +78,7 @@ flowchart LR
 flowchart TD
   A([Open on the next shift]) --> B{"Is the saved sleep<br/>still ahead?"}
   B -- "yes" --> N["/ Now<br/>your drinks from the last 24 h,<br/>the chips you use most first"]
-  B -- "no, it passed" --> S["/sleep<br/>Welcome back.<br/>Last time: 2 drinks, and 93 mg still in you<br/>when you slept yesterday at 9:00 AM."]
+  B -- "no, it passed" --> S["/sleep<br/>Welcome back.<br/>Last time: 2 drinks, and 96 mg still in you<br/>when you slept yesterday at 9:00 AM."]
   S --> P["Over your 50 mg line at 4 of your last 6 sleeps.<br/>one bar per sleep, Tue … Sun"]
   P -- "Same as last time: 9:00 AM today" --> N
   P -- "change the time, then Use the time above" --> N

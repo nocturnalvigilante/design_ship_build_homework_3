@@ -113,7 +113,7 @@ A fresh subagent graded the repo and the live URL cold against the brief, as the
 | G19 | README had no screenshots; first-run check was 7th of 11 sections | Four-screen strip like the brief's figure at the top; brief → evidence table; reordered | ☑ `8de97e8` |
 | G20 | On a laptop the app is a narrow phone column | Two-column Now at desktop width; wordmark links home | ☑ `2e3f2f8`, screenshot `docs/desktop-now.png` |
 | G21 | Nurses use it from the home screen | Web app manifest (name, icon, colours), no packages | ☑ `7242f58` |
-| G22 | First-run check ran once, before these changes | Round 2: new persona on the live URL after the fixes, feedback and changes in README | ☐ |
+| G22 | First-run check ran once, before these changes | Round 2: new persona on the live URL after the fixes, feedback and changes in README | ☑ PhD student at 3pm; 10 fixes in `a56ed85`…`b440fd6`, re-checked on a production build and live |
 | G23 | Talking points for class are scattered | `TALK.md`: the five questions, answered briefly | ☑ `929ba53` |
 
 **Not changed:** commit timestamps. Some commits cluster within minutes because each was committed as soon as it was verified; rewriting history to look spread out would misrepresent it.

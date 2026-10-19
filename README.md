@@ -18,7 +18,7 @@ On a laptop, Now uses two columns:
 
 1. Open the app. One question: when are you sleeping next? At 4am it has already filled in 9:00 AM. Tap **Next**.
 2. Every drink shows what it would leave at sleep *before* you tap it: "Red Bull · 80 mg · +30 at sleep". Tap **Red Bull**: "30 mg still in you at your 9:00 AM sleep".
-3. Come back on your next shift: "Welcome back. Last time: 2 drinks, and 93 mg still in you when you slept yesterday at 9:00 AM", a bar for each recent sleep, and one tap for "Same as last time".
+3. Come back on your next shift: "Welcome back. Last time: 2 drinks, and 96 mg still in you when you slept yesterday at 9:00 AM", a bar for each recent sleep, and one tap for "Same as last time".
 
 ## Where each part of the brief is
 
@@ -115,7 +115,7 @@ flowchart LR
 flowchart TD
   A([Open on the next shift]) --> B{"Is the saved sleep<br/>still ahead?"}
   B -- "yes" --> N["/ Now<br/>your drinks from the last 24 h,<br/>the chips you use most first"]
-  B -- "no, it passed" --> S["/sleep<br/>Welcome back.<br/>Last time: 2 drinks, and 93 mg still in you<br/>when you slept yesterday at 9:00 AM."]
+  B -- "no, it passed" --> S["/sleep<br/>Welcome back.<br/>Last time: 2 drinks, and 96 mg still in you<br/>when you slept yesterday at 9:00 AM."]
   S --> P["Over your 50 mg line at 4 of your last 6 sleeps.<br/>one bar per sleep, Tue … Sun"]
   P -- "Same as last time: 9:00 AM today" --> N
   P -- "change the time, then Use the time above" --> N
@@ -282,7 +282,7 @@ After round 1, a separate subagent graded the repo and the live site cold, as th
 
 - **Keyboard:** every control is a real `<button>`, `<a>` or `<input>`. Tab order on Now: wordmark → sleep time → Adjust → drink chips → Other… → history → nav. A 3px amber focus ring shows on every one, and the nav draws its ring inside the tab so the screen edge can't clip it. Checked in headless Chrome by tabbing and printing the focused element.
 - **Labels:** every input has a `<label for>`, including the checkbox (the shared `Field` and `Checkbox`). Hints and errors are tied to their input with `aria-describedby`, and invalid fields get `aria-invalid`. On a failed submit, focus moves to the first field to fix, and nothing typed is cleared.
-- **Live updates:** the hero number and the "Logged / Removed …, Undo" line are `aria-live="polite"`. Each chip's accessible name says what it adds at sleep. Each bar on the welcome-back card has a text equivalent ("93 mg when you slept yesterday at 9:00 AM").
+- **Live updates:** the hero number and the "Logged / Removed …, Undo" line are `aria-live="polite"`. Each chip's accessible name says what it adds at sleep. Each bar on the welcome-back card has a text equivalent ("96 mg when you slept yesterday at 9:00 AM").
 - **Structure:** a page title per route ("Log a drink · Last Cup") and one `<h1>` each. Units shown inside inputs ("mg") are in the label for screen readers ("Caffeine, in mg").
 - **Contrast**, computed by the agent with [`scripts/contrast.mjs`](scripts/contrast.mjs) (WCAG 2.1 formula, no packages). Run `node scripts/contrast.mjs`; it exits non-zero if any pair fails.
 
