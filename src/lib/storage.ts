@@ -13,6 +13,7 @@ import {
 const KEY = "lastcup:v1";
 // Older drinks no longer affect anything, so we stop keeping them.
 const KEEP_FOR = 30 * 24 * HOUR;
+const MAX_PAST_SLEEPS = 14;
 
 export type CustomDrink = { key: string; name: string; mg: number };
 
@@ -20,6 +21,8 @@ export type LastCupState = {
   drinks: LoggedDrink[];
   /** The sleep the person is planning around next, or null before the first answer. */
   nextSleep: number | null;
+  /** Sleeps that have passed, newest first, so coming back can show a pattern across shifts. */
+  pastSleeps: number[];
   halfLifeH: number;
   thresholdMg: number;
   customDrinks: CustomDrink[];
@@ -28,6 +31,7 @@ export type LastCupState = {
 export const EMPTY_STATE: LastCupState = {
   drinks: [],
   nextSleep: null,
+  pastSleeps: [],
   halfLifeH: DEFAULT_HALF_LIFE_H,
   thresholdMg: DEFAULT_THRESHOLD_MG,
   customDrinks: [],
@@ -40,6 +44,9 @@ function parse(raw: string | null): LastCupState {
     return {
       drinks: Array.isArray(data.drinks) ? data.drinks : [],
       nextSleep: typeof data.nextSleep === "number" ? data.nextSleep : null,
+      pastSleeps: Array.isArray(data.pastSleeps)
+        ? data.pastSleeps.filter((t): t is number => typeof t === "number")
+        : [],
       halfLifeH:
         typeof data.halfLifeH === "number" ? data.halfLifeH : DEFAULT_HALF_LIFE_H,
       thresholdMg:
@@ -91,7 +98,11 @@ function subscribe(listener: () => void) {
 
 export function saveState(next: LastCupState) {
   const cutoff = Date.now() - KEEP_FOR;
-  const pruned = { ...next, drinks: next.drinks.filter((d) => d.at > cutoff) };
+  const pruned = {
+    ...next,
+    drinks: next.drinks.filter((d) => d.at > cutoff),
+    pastSleeps: next.pastSleeps.filter((t) => t > cutoff).slice(0, MAX_PAST_SLEEPS),
+  };
   const raw = JSON.stringify(pruned);
   try {
     window.localStorage.setItem(KEY, raw);
@@ -101,6 +112,19 @@ export function saveState(next: LastCupState) {
     memoryRaw = raw;
   }
   listeners.forEach((l) => l());
+}
+
+/**
+ * Plan the next sleep. If the one before it has already passed, it moves into
+ * the history, which is what the welcome-back card draws.
+ */
+export function withNextSleep(s: LastCupState, at: number, now: number): LastCupState {
+  const passed = s.nextSleep !== null && s.nextSleep <= now;
+  return {
+    ...s,
+    nextSleep: at,
+    pastSleeps: passed && !s.pastSleeps.includes(s.nextSleep!) ? [s.nextSleep!, ...s.pastSleeps] : s.pastSleeps,
+  };
 }
 
 export function clearState() {

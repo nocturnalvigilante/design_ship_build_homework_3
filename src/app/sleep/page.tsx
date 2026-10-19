@@ -7,7 +7,7 @@ import { Button } from "@/components/Button";
 import { Field } from "@/components/Field";
 import { Loading, Screen } from "@/components/Screen";
 import { HOUR, remainingAt } from "@/lib/caffeine";
-import { useLastCup, type LastCupState } from "@/lib/storage";
+import { useLastCup, withNextSleep, type LastCupState } from "@/lib/storage";
 import {
   clock,
   dayLabel,
@@ -49,7 +49,7 @@ function SleepForm({
   const picked = nextOccurrence(value, now);
 
   function save(at: number) {
-    update((s) => ({ ...s, nextSleep: at }));
+    update((s) => withNextSleep(s, at, Date.now()));
     router.push("/");
   }
 
@@ -117,8 +117,13 @@ function SleepForm({
 
 /** The reason to come back: it remembers last shift and makes the next one one tap. */
 function WelcomeBack({ state, lastSleep }: { state: LastCupState; lastSleep: number }) {
+  const now = useNow();
   const shift = state.drinks.filter((d) => d.at <= lastSleep && d.at > lastSleep - 24 * HOUR);
   const atSleep = Math.round(remainingAt(shift, lastSleep, state.halfLifeH));
+  const day = dayLabel(lastSleep, now);
+  const when = day === "today" ? clock(lastSleep) : `${clock(lastSleep)} ${day}`;
+  // Newest first: the sleep that just passed, then the history.
+  const sleeps = [lastSleep, ...state.pastSleeps.filter((t) => t !== lastSleep)].slice(0, 7);
   return (
     <section
       aria-label="Last shift"
@@ -127,9 +132,55 @@ function WelcomeBack({ state, lastSleep }: { state: LastCupState; lastSleep: num
       <p className="font-display text-xl font-semibold">Welcome back.</p>
       <p className="mt-1 text-muted tabular-nums">
         {shift.length === 0
-          ? `Last sleep was ${clock(lastSleep)}. No drinks logged before it.`
-          : `Last shift: ${shift.length} ${shift.length === 1 ? "drink" : "drinks"}, ${atSleep} mg at your ${clock(lastSleep)} sleep.`}
+          ? `Your last sleep was ${when}. No drinks logged before it.`
+          : `Last shift: ${shift.length} ${shift.length === 1 ? "drink" : "drinks"}, ${atSleep} mg at your ${when} sleep.`}
       </p>
+      {sleeps.length > 1 && <PastSleeps state={state} sleeps={sleeps} />}
     </section>
+  );
+}
+
+/** Your last few sleeps as small bars, so the pattern shows, not just last night. */
+function PastSleeps({ state, sleeps }: { state: LastCupState; sleeps: number[] }) {
+  const rows = sleeps
+    .map((t) => ({
+      t,
+      mg: Math.round(
+        remainingAt(
+          state.drinks.filter((d) => d.at <= t),
+          t,
+          state.halfLifeH,
+        ),
+      ),
+    }))
+    .reverse(); // oldest on the left, like a calendar
+  const over = rows.filter((r) => r.mg > state.thresholdMg).length;
+  const top = Math.max(state.thresholdMg * 2, ...rows.map((r) => r.mg));
+  return (
+    <figure className="mt-4">
+      <figcaption className="text-sm text-muted tabular-nums">
+        {over === 0
+          ? `Under your ${state.thresholdMg} mg line at all of your last ${rows.length} sleeps.`
+          : `Over your ${state.thresholdMg} mg line at ${over} of your last ${rows.length} sleeps.`}
+      </figcaption>
+      <ul className="mt-3 flex h-20 items-end gap-2" aria-label="mg in you at each sleep, oldest first">
+        {rows.map((r) => {
+          const isOver = r.mg > state.thresholdMg;
+          return (
+            <li key={r.t} className="flex flex-1 flex-col items-center gap-1">
+              <span className={`text-xs tabular-nums ${isOver ? "text-coral" : "text-muted"}`}>
+                {r.mg}
+                <span className="sr-only"> mg at the {clock(r.t)} sleep</span>
+              </span>
+              <span
+                aria-hidden="true"
+                className={`w-full rounded-t ${isOver ? "bg-coral" : "bg-amber"}`}
+                style={{ height: `${Math.max(3, (r.mg / top) * 48)}px` }}
+              />
+            </li>
+          );
+        })}
+      </ul>
+    </figure>
   );
 }
