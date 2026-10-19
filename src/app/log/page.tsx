@@ -1,14 +1,22 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { ActionBar } from "@/components/ActionBar";
 import { Button } from "@/components/Button";
 import { Field } from "@/components/Field";
 import { Loading, Screen } from "@/components/Screen";
 import { HOUR } from "@/lib/caffeine";
 import { drinkOptions } from "@/lib/options";
-import { announceLogged, newId, useLastCup, type LastCupState } from "@/lib/storage";
+import {
+  announceLogged,
+  clearDraft,
+  loadDraft,
+  newId,
+  saveDraft,
+  useLastCup,
+  type LastCupState,
+} from "@/lib/storage";
 
 const MAX_MG = 1000;
 
@@ -69,18 +77,37 @@ function LogForm({
   update: ReturnType<typeof useLastCup>["update"];
 }) {
   const router = useRouter();
-  const [name, setName] = useState("");
-  const [mg, setMg] = useState("");
-  const [at, setAt] = useState(() => toLocalInput(Date.now()));
+  // Anything typed earlier and not logged yet comes back (this only renders on the client).
+  const [draft] = useState(loadDraft);
+  const [name, setName] = useState(draft?.name ?? "");
+  const [mg, setMg] = useState(draft?.mg ?? "");
   // The input only holds whole minutes; if it's untouched, "now" means the moment of saving.
-  const [atTouched, setAtTouched] = useState(false);
-  const [remember, setRemember] = useState(true);
+  const [atTouched, setAtTouched] = useState(draft?.atTouched ?? false);
+  const [at, setAt] = useState(() =>
+    draft?.atTouched && draft.at ? draft.at : toLocalInput(Date.now()),
+  );
+  const [remember, setRemember] = useState(draft?.remember ?? true);
   const [errors, setErrors] = useState<Errors>({});
+  const [restored, setRestored] = useState(draft !== null);
   const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    saveDraft({ name, mg, at, atTouched, remember });
+  }, [name, mg, at, atTouched, remember]);
 
   const options = drinkOptions(state);
   // The first five are already one-tap chips on Now; offer the rest here.
   const more = options.slice(5);
+
+  function startOver() {
+    setName("");
+    setMg("");
+    setAt(toLocalInput(Date.now()));
+    setAtTouched(false);
+    setRemember(true);
+    setErrors({});
+    setRestored(false);
+  }
 
   function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -106,12 +133,22 @@ function LogForm({
           ? [{ key: `custom-${newId()}`, name: drinkName, mg: result.mg! }, ...s.customDrinks]
           : s.customDrinks,
     }));
+    clearDraft();
     announceLogged(drink);
     router.push("/");
   }
 
   return (
     <div className="flex flex-1 flex-col">
+      {restored && (
+        <div className="-mt-2 mb-6 flex min-h-12 items-center justify-between gap-3 rounded-xl border border-line px-4">
+          <p className="text-sm text-muted">Kept what you typed last time.</p>
+          <Button variant="ghost" className="px-2 text-sm" onClick={startOver}>
+            Start over
+          </Button>
+        </div>
+      )}
+
       <section aria-labelledby="start-from" className="mb-8">
         <h2 id="start-from" className="mb-3 text-sm font-medium text-muted">
           More drinks

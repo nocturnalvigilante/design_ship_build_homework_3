@@ -105,6 +105,7 @@ export function saveState(next: LastCupState) {
 
 export function clearState() {
   memoryRaw = null;
+  clearDraft();
   try {
     window.localStorage.removeItem(KEY);
   } catch {}
@@ -129,6 +130,44 @@ export function useLastCup() {
 
 export function newId() {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
+/**
+ * What's typed on /log but not logged yet, so checking Now mid-form (or a
+ * phone that reloads the tab) doesn't lose it. Cleared once the drink is logged.
+ */
+export type LogDraft = { name: string; mg: string; at: string; atTouched: boolean; remember: boolean };
+
+const DRAFT_KEY = "lastcup:draft";
+
+export function loadDraft(): LogDraft | null {
+  try {
+    const raw = window.localStorage.getItem(DRAFT_KEY);
+    const d = raw ? (JSON.parse(raw) as Partial<LogDraft>) : null;
+    if (!d || typeof d.name !== "string" || typeof d.mg !== "string") return null;
+    return {
+      name: d.name,
+      mg: d.mg,
+      at: typeof d.at === "string" ? d.at : "",
+      atTouched: d.atTouched === true,
+      remember: d.remember !== false,
+    };
+  } catch {
+    return null;
+  }
+}
+
+export function saveDraft(draft: LogDraft) {
+  try {
+    if (!draft.name && !draft.mg && !draft.atTouched) window.localStorage.removeItem(DRAFT_KEY);
+    else window.localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+  } catch {}
+}
+
+export function clearDraft() {
+  try {
+    window.localStorage.removeItem(DRAFT_KEY);
+  } catch {}
 }
 
 /**
