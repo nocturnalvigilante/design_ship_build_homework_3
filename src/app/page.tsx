@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/Button";
 import { DecayCurve } from "@/components/DecayCurve";
 import { DrinkChip } from "@/components/DrinkChip";
@@ -36,6 +36,12 @@ export default function NowPage() {
     const id = setTimeout(() => setToast(null), 20_000);
     return () => clearTimeout(id);
   }, [toast]);
+
+  // After Undo the button goes away, so put keyboard focus back where the chips start.
+  const chipsHeading = useRef<HTMLHeadingElement>(null);
+  function refocus() {
+    requestAnimationFrame(() => chipsHeading.current?.focus());
+  }
 
   function drop(id: string) {
     update((s) => ({ ...s, drinks: s.drinks.filter((d) => d.id !== id) }));
@@ -73,6 +79,11 @@ export default function NowPage() {
   const clear = clearBy(drinks, now, halfLifeH, thresholdMg + 0.5);
   const today = drunkInLast24h(drinks, now);
   const options = drinkOptions(state).slice(0, 5);
+  const inYouNow = Math.round(remainingAt(drinks, now, halfLifeH));
+  // Drinks older than 24 h can still leave a little, so "in you now" may exceed "drunk".
+  const fromEarlier = Math.round(
+    remainingAt(drinks.filter((d) => d.at <= now - 24 * HOUR), now, halfLifeH),
+  );
   const recent = drinks
     .filter((d) => d.at > now - 24 * HOUR)
     .sort((a, b) => b.at - a.at);
@@ -101,12 +112,12 @@ export default function NowPage() {
           <HeroNumber mg={atSleep} sleep={sleep} now={now} over={over} />
 
           <p className={`mt-2 text-base tabular-nums ${over ? "text-coral" : "text-muted"}`}>
-            {recent.length === 0
+            {recent.length === 0 && atSleep === 0
               ? "Nothing logged yet. Tap what you’re drinking to see what it leaves at sleep."
               : clear <= now
               ? `You're under your ${thresholdMg} mg line now.`
               : over
-                ? `Over your ${thresholdMg} mg line at sleep. Clear by ${clock(clear)}, ${fromNow(clear, sleep).replace("in ", "")} after your sleep time.`
+                ? `Over your ${thresholdMg} mg line at sleep. Under it by ${clock(clear)}, ${fromNow(clear, sleep).replace("in ", "")} after your sleep time.`
                 : `Under ${thresholdMg} mg by ${clock(clear)}, before you sleep.`}
           </p>
 
@@ -135,12 +146,24 @@ export default function NowPage() {
               {toast ? (
                 <>
                   <p className="tabular-nums">{toast.text}</p>
-                  <Button variant="ghost" className="px-3" onClick={toast.undo}>
+                  <Button
+                    variant="ghost"
+                    className="px-3"
+                    onClick={() => {
+                      toast.undo();
+                      refocus();
+                    }}
+                  >
                     Undo
                   </Button>
                 </>
               ) : (
-                <h2 id="add" className="font-display text-lg font-semibold">
+                <h2
+                  id="add"
+                  ref={chipsHeading}
+                  tabIndex={-1}
+                  className="font-display text-lg font-semibold"
+                >
                   Just had something?
                 </h2>
               )}
@@ -167,7 +190,13 @@ export default function NowPage() {
                 Other…
               </Button>
             </div>
-            {over ? (
+            {!over && (
+            <p className="mt-3 text-sm tabular-nums">
+              Room for <span className="font-semibold text-amber">{thresholdMg - atSleep} mg</span>{" "}
+              more at sleep before your {thresholdMg} mg line.
+            </p>
+          )}
+          {over ? (
               <p className="mt-2 text-sm text-muted">
                 You&rsquo;re already over your {thresholdMg} mg line at sleep, so each one adds to it.
               </p>
@@ -195,8 +224,8 @@ export default function NowPage() {
           {recent.length > 0 && (
             <section aria-labelledby="recent" className="mt-8">
               <h2 id="recent" className="mb-2 text-sm font-medium text-muted tabular-nums">
-                Last 24 hours: {today} mg drunk, {Math.round(remainingAt(drinks, now, halfLifeH))} mg
-                in you now
+                Last 24 hours: {today} mg drunk. In you now: {inYouNow} mg
+                {fromEarlier > 0 && ` (${fromEarlier} from before that)`}
               </h2>
               <ul className="divide-y divide-line rounded-xl border border-line">
                 {recent.map((d) => (
