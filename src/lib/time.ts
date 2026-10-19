@@ -41,10 +41,15 @@ export function nextOccurrence(hhmm: string, now: number): number | null {
   return d.getTime();
 }
 
-/** A sensible first guess: after a night (midnight–6am) that's 9:00, otherwise 23:00. */
+/**
+ * A sensible first guess: the sooner of 9:00 (after a night shift) and 23:00 (a usual
+ * night), skipping one under 45 min away. So 2am or 7:15am suggests 9:00, 3pm suggests 23:00.
+ */
 export function suggestedSleep(now: number): number {
-  const hour = new Date(now).getHours();
-  return nextOccurrence(hour < 6 ? "9:00" : "23:00", now)!;
+  const options = ["9:00", "23:00"]
+    .map((t) => nextOccurrence(t, now)!)
+    .filter((t) => t - now >= 45 * 60_000);
+  return Math.min(...options);
 }
 
 /** "today", "tomorrow", or a weekday, relative to `now`. */
