@@ -34,21 +34,29 @@ function SettingsForm({
   const [thresholdError, setThresholdError] = useState<string>();
   const [confirmClear, setConfirmClear] = useState(false);
 
-  function onThreshold(raw: string) {
-    setThreshold(raw);
+  // Checked as you type, saved when you leave the field: typing "50" shouldn't save 5 on the way.
+  function check(raw: string) {
     const mg = Number(raw);
     // 0 would mean "never clear", so the clear-by time could never be shown.
-    if (!raw.trim() || !Number.isFinite(mg) || mg < 1 || mg > 400) {
-      setThresholdError("Enter a number of mg between 1 and 400. 50 is a common starting point.");
-      return;
-    }
-    setThresholdError(undefined);
-    update((s) => ({ ...s, thresholdMg: Math.round(mg) }));
+    return !raw.trim() || !Number.isFinite(mg) || mg < 1 || mg > 400
+      ? "Enter a number of mg between 1 and 400. 50 is a common starting point."
+      : undefined;
+  }
+
+  function onThreshold(raw: string) {
+    setThreshold(raw);
+    if (thresholdError) setThresholdError(check(raw));
+  }
+
+  function saveThreshold() {
+    const error = check(threshold);
+    setThresholdError(error);
+    if (!error) update((s) => ({ ...s, thresholdMg: Math.round(Number(threshold)) }));
   }
 
   return (
     <div className="flex flex-col gap-8">
-      <p className="-mt-2 text-muted">Changes save as you make them.</p>
+      <p className="-mt-2 text-muted">Changes save as you make them, on this device.</p>
       <Slider
         label="Caffeine half-life"
         value={state.halfLifeH}
@@ -67,6 +75,10 @@ function SettingsForm({
         suffix="mg"
         value={threshold}
         onChange={(e) => onThreshold(e.target.value)}
+        onBlur={saveThreshold}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") saveThreshold();
+        }}
         error={thresholdError}
         hint={`Under this at bedtime, you're shown amber; over it, coral. Default ${DEFAULT_THRESHOLD_MG} mg.`}
       />
