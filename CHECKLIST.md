@@ -81,24 +81,24 @@ A fresh subagent graded the repo and the live URL cold against the brief, as the
 | # | Finding | Fix | Status |
 |---|---|---|---|
 | G1 | "Saves what the person typed" only held on error; leaving /log lost it | Draft kept in `localStorage` until logged, with "Start over" | ☑ `f4c5cf9` |
-| G2 | "Choose what to keep": README said the user just took the agent's recommendations | Proposed / kept / cut table from the plan-mode transcript | ☐ |
-| G3 | "Add it to my one-tap drinks" ticked by default, so a blank name always errored, contradicting the README | Unticked by default; name needed only when ticked | ☐ |
+| G2 | "Choose what to keep": README said the user just took the agent's recommendations | Proposed / kept / cut table from the plan-mode transcript | ☑ `8de97e8` |
+| G3 | "Add it to my one-tap drinks" ticked by default, so a blank name always errored, contradicting the README | Unticked by default; name needed only when ticked | ☑ `8b01dc6` |
 | G4 | Contrast evidence was a table only | `scripts/contrast.mjs`, 14 pairs, rerunnable | ☑ `47f6f80` |
-| G5 | Flow diagrams didn't match the app's copy ("+30 mg", "today" vs 24 h, no Undo) | Diagrams redrawn from the code, plus a map of the routes and nav | ☐ |
-| G6 | `/log` pills and checkbox were hand-rolled, against our own shared-components rule | Shared `Pill` and `Checkbox` components | ☐ |
+| G5 | Flow diagrams didn't match the app's copy ("+30 mg", "today" vs 24 h, no Undo) | Diagrams redrawn from the code, plus a map of the routes and nav | ☑ `0902c7b`, rendered with Mermaid 10.9 to check |
+| G6 | `/log` pills and checkbox were hand-rolled, against our own shared-components rule | Shared `Pill` and `Checkbox` components | ☑ `1c41078` |
 
 ### Bugs
 | # | Finding | Fix | Status |
 |---|---|---|---|
-| G7 | "2 shots" logged 2 mg; "1,000" logged 1 mg | Accept "180", "180mg", "1,000"; anything else gets an error saying what to type | ☐ |
-| G8 | Errors on /log stayed after the field was fixed (/sleep cleared them) | A field's error clears as you edit it | ☐ |
-| G9 | Already over the line, every chip is coral but the key says "would put you over" | Key says "you're over your line" in that state | ☐ |
-| G10 | `over` used the rounded mg, clear-by the exact one: "Under 50 mg by 9:02, before you sleep" at a 9:00 sleep | One value for both | ☐ |
-| G11 | A custom drink named like a built-in ("Coffee", 180 mg) silently didn't become a chip; usage counts were case-sensitive | Error next to the name saying to rename it; case-insensitive matching | ☐ |
-| G12 | The Undo line never expired | Clears after 20 s | ☐ |
-| G13 | 24 h clock in the app, "09:00 AM" in the native inputs | One locale-aware clock format everywhere | ☐ |
-| G14 | Settings saved "5" while typing "50", flashing coral | The sleep line saves when you leave the field | ☐ |
-| G15 | Chip borders 1.3:1 against the page (WCAG 1.4.11 asks 3:1 for component edges) | Interactive edges use the 3.7:1 edge colour | ☐ |
+| G7 | "2 shots" logged 2 mg; "1,000" logged 1 mg | Accept "180", "180mg", "1,000"; anything else gets an error saying what to type | ☑ `8b01dc6`, verified: '2 shots' errors |
+| G8 | Errors on /log stayed after the field was fixed (/sleep cleared them) | A field's error clears as you edit it | ☑ `8b01dc6` |
+| G9 | Already over the line, every chip is coral but the key says "would put you over" | Key says "you're over your line" in that state | ☑ `3e64afb`, verified live |
+| G10 | `over` used the rounded mg, clear-by the exact one: "Under 50 mg by 9:02, before you sleep" at a 9:00 sleep | One value for both | ☑ `3e64afb` |
+| G11 | A custom drink named like a built-in ("Coffee", 180 mg) silently didn't become a chip; usage counts were case-sensitive | Error next to the name saying to rename it; case-insensitive matching | ☑ `8b01dc6`, `a824559`, verified: 'coffee' clash errors |
+| G12 | The Undo line never expired | Clears after 20 s | ☑ `3e64afb`, verified live: gone after 20 s |
+| G13 | 24 h clock in the app, "09:00 AM" in the native inputs | One locale-aware clock format everywhere | ☑ `84d06e6` |
+| G14 | Settings saved "5" while typing "50", flashing coral | The sleep line saves when you leave the field | ☑ `e57db1b`, verified: typing 5 doesn't save |
+| G15 | Chip borders 1.3:1 against the page (WCAG 1.4.11 asks 3:1 for component edges) | Interactive edges use the 3.7:1 edge colour | ☑ `48deae7`, `1c41078` |
 
 ### Retention and onboarding
 | # | Finding | Fix | Status |
@@ -110,10 +110,10 @@ A fresh subagent graded the repo and the live URL cold against the brief, as the
 ### Presentation
 | # | Finding | Fix | Status |
 |---|---|---|---|
-| G19 | README had no screenshots; first-run check was 7th of 11 sections | Four-screen strip like the brief's figure at the top; brief → evidence table; reordered | ☐ |
-| G20 | On a laptop the app is a narrow phone column | Two-column Now at desktop width; wordmark links home | ☐ |
-| G21 | Nurses use it from the home screen | Web app manifest (name, icon, colours), no packages | ☐ |
+| G19 | README had no screenshots; first-run check was 7th of 11 sections | Four-screen strip like the brief's figure at the top; brief → evidence table; reordered | ☑ `8de97e8` |
+| G20 | On a laptop the app is a narrow phone column | Two-column Now at desktop width; wordmark links home | ☑ `2e3f2f8`, screenshot `docs/desktop-now.png` |
+| G21 | Nurses use it from the home screen | Web app manifest (name, icon, colours), no packages | ☑ `7242f58` |
 | G22 | First-run check ran once, before these changes | Round 2: new persona on the live URL after the fixes, feedback and changes in README | ☐ |
-| G23 | Talking points for class are scattered | `TALK.md`: the five questions, answered briefly | ☐ |
+| G23 | Talking points for class are scattered | `TALK.md`: the five questions, answered briefly | ☑ `929ba53` |
 
 **Not changed:** commit timestamps. Some commits cluster within minutes because each was committed as soon as it was verified; rewriting history to look spread out would misrepresent it.
