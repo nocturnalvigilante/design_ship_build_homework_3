@@ -154,7 +154,7 @@ function LogForm({
       {restored && (
         <div className="-mt-2 mb-6 flex min-h-12 items-center justify-between gap-3 rounded-xl border border-line px-4">
           <p className="text-sm text-muted">Kept what you typed last time.</p>
-          <Button variant="ghost" className="px-2 text-sm" onClick={startOver}>
+          <Button variant="ghost" className="shrink-0 px-2 text-sm whitespace-nowrap" onClick={startOver}>
             Start over
           </Button>
         </div>

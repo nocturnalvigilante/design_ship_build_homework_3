@@ -121,7 +121,7 @@ function WelcomeBack({ state, lastSleep }: { state: LastCupState; lastSleep: num
   const shift = state.drinks.filter((d) => d.at <= lastSleep && d.at > lastSleep - 24 * HOUR);
   const atSleep = Math.round(remainingAt(shift, lastSleep, state.halfLifeH));
   const day = dayLabel(lastSleep, now);
-  const when = day === "today" ? clock(lastSleep) : `${clock(lastSleep)} ${day}`;
+  const when = day === "today" ? `at ${clock(lastSleep)}` : `${day} at ${clock(lastSleep)}`;
   // Newest first: the sleep that just passed, then the history.
   const sleeps = [lastSleep, ...state.pastSleeps.filter((t) => t !== lastSleep)].slice(0, 7);
   return (
@@ -132,16 +132,16 @@ function WelcomeBack({ state, lastSleep }: { state: LastCupState; lastSleep: num
       <p className="font-display text-xl font-semibold">Welcome back.</p>
       <p className="mt-1 text-muted tabular-nums">
         {shift.length === 0
-          ? `Your last sleep was ${when}. No drinks logged before it.`
-          : `Last shift: ${shift.length} ${shift.length === 1 ? "drink" : "drinks"}, ${atSleep} mg at your ${when} sleep.`}
+          ? `You last slept ${when}, with no drinks logged before it.`
+          : `Last shift: ${shift.length} ${shift.length === 1 ? "drink" : "drinks"}, and ${atSleep} mg still in you when you slept ${when}.`}
       </p>
-      {sleeps.length > 1 && <PastSleeps state={state} sleeps={sleeps} />}
+      {sleeps.length > 1 && <PastSleeps state={state} sleeps={sleeps} now={now} />}
     </section>
   );
 }
 
 /** Your last few sleeps as small bars, so the pattern shows, not just last night. */
-function PastSleeps({ state, sleeps }: { state: LastCupState; sleeps: number[] }) {
+function PastSleeps({ state, sleeps, now }: { state: LastCupState; sleeps: number[]; now: number }) {
   const rows = sleeps
     .map((t) => ({
       t,
@@ -163,20 +163,25 @@ function PastSleeps({ state, sleeps }: { state: LastCupState; sleeps: number[] }
           ? `Under your ${state.thresholdMg} mg line at all of your last ${rows.length} sleeps.`
           : `Over your ${state.thresholdMg} mg line at ${over} of your last ${rows.length} sleeps.`}
       </figcaption>
-      <ul className="mt-3 flex h-20 items-end gap-2" aria-label="mg in you at each sleep, oldest first">
+      <ul className="mt-3 flex items-end gap-2" aria-label="mg in you at each sleep, oldest first">
         {rows.map((r) => {
           const isOver = r.mg > state.thresholdMg;
           return (
             <li key={r.t} className="flex flex-1 flex-col items-center gap-1">
               <span className={`text-xs tabular-nums ${isOver ? "text-coral" : "text-muted"}`}>
                 {r.mg}
-                <span className="sr-only"> mg at the {clock(r.t)} sleep</span>
+                <span className="sr-only">
+                  {" "}mg when you slept {dayLabel(r.t, now)} at {clock(r.t)}
+                </span>
               </span>
               <span
                 aria-hidden="true"
                 className={`w-full rounded-t ${isOver ? "bg-coral" : "bg-amber"}`}
                 style={{ height: `${Math.max(3, (r.mg / top) * 48)}px` }}
               />
+              <span aria-hidden="true" className="text-xs text-muted">
+                {new Date(r.t).toLocaleDateString([], { weekday: "short" })}
+              </span>
             </li>
           );
         })}
