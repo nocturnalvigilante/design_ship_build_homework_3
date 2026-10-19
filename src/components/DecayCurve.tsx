@@ -40,7 +40,7 @@ export function DecayCurve({
   const nowMg = remainingAt(drinks, now, halfLifeH);
   const sleepColor = over ? "var(--color-coral)" : "var(--color-amber)";
   // With sleep close by, "now" would print over "sleep 9:00"; the dot alone marks now then.
-  const showNowLabel = Math.abs(x(sleep) - x(now)) > 46;
+  const showNowLabel = Math.abs(x(sleep) - x(now)) > 64;
 
   return (
     <svg viewBox={`0 0 ${W} ${H}`} className="w-full" aria-hidden="true">
@@ -54,7 +54,7 @@ export function DecayCurve({
       <path d={line} fill="none" stroke="var(--color-amber)" strokeWidth="2.5" strokeLinejoin="round" />
 
       <line x1={x(sleep)} x2={x(sleep)} y1={PAD.top} y2={base} stroke={sleepColor} strokeWidth="1.5" />
-      <text x={x(sleep)} y={H - 8} textAnchor="middle" fontSize="11" fill={sleepColor} className="tabular-nums">
+      <text x={Math.min(x(sleep), W - 40)} y={H - 8} textAnchor="middle" fontSize="11" fill={sleepColor} className="tabular-nums">
         sleep {clock(sleep)}
       </text>
 

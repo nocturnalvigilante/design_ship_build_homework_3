@@ -13,10 +13,12 @@ export function useNow(intervalMs = 30_000) {
   return now;
 }
 
-/** "9:00" or "21:30", in the person's local time. */
+/**
+ * "9:00 AM" or "21:30", the way this person's device writes times, so it matches the
+ * native time pickers instead of mixing 12 h and 24 h on one screen.
+ */
 export function clock(ms: number) {
-  const d = new Date(ms);
-  return `${d.getHours()}:${String(d.getMinutes()).padStart(2, "0")}`;
+  return new Date(ms).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
 }
 
 /** "HH:MM" for <input type="time">. */
