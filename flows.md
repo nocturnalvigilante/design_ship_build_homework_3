@@ -46,7 +46,8 @@ flowchart TD
   B -- yes --> C["Tap the chip"]
   C --> D{"Over your line<br/>at sleep?"}
   D -- no --> E["Amber hero<br/>Under 50 mg by 7:30 AM, before you sleep."]
-  D -- yes --> F["Coral hero<br/>Over your 50 mg line at sleep.<br/>Clear by 1:01 PM, 4 h after your sleep time."]
+  D -- yes --> F["Coral hero<br/>Over your 50 mg line at sleep.<br/>Under it by 1:01 PM, 4 h after your sleep time."]
+  E --> R["Room for 20 mg more at sleep<br/>before your 50 mg line."]
   E & F --> U["Logged Red Bull, 80 mg. Undo<br/>(for 20 s; Remove stays on each drink)"]
   B -- "no: Other…" --> L["/log  Log a drink<br/>(the form, below)"]
   L -- "Log drink" --> A
@@ -55,7 +56,7 @@ flowchart TD
 
 ### The form and its errors (`/log`)
 
-Fields: **Drink** (optional for a one-off) · **Caffeine, in mg** · **When did you start it?** (defaults to now) · ☐ **Add it to my one-tap drinks** (unticked).
+Fields: **Drink** (optional for a one-off) · **Caffeine, in mg** · **When did you start it?** (defaults to now, with one-tap Just now / 30 min / 1 h / 2 h / 3 h ago) · ☐ **Add it to my one-tap drinks** (unticked).
 
 ```mermaid
 flowchart LR
@@ -77,10 +78,10 @@ flowchart LR
 flowchart TD
   A([Open on the next shift]) --> B{"Is the saved sleep<br/>still ahead?"}
   B -- "yes" --> N["/ Now<br/>your drinks from the last 24 h,<br/>the chips you use most first"]
-  B -- "no, it passed" --> S["/sleep<br/>Welcome back.<br/>Last shift: 2 drinks, and 93 mg still in you<br/>when you slept yesterday at 9:00 AM."]
+  B -- "no, it passed" --> S["/sleep<br/>Welcome back.<br/>Last time: 2 drinks, and 93 mg still in you<br/>when you slept yesterday at 9:00 AM."]
   S --> P["Over your 50 mg line at 4 of your last 6 sleeps.<br/>one bar per sleep, Tue … Sun"]
   P -- "Same as last time: 9:00 AM today" --> N
-  P -- "pick a new time, Use the time above" --> N
+  P -- "change the time, then Use the time above" --> N
 ```
 
 Everything lives in `localStorage` on this device (`lastcup:v1`, plus `lastcup:draft` for a half-filled form): drinks for 30 days, the next sleep, the last 14 sleeps, settings and custom chips.
@@ -91,8 +92,8 @@ Everything lives in `localStorage` on this device (`lastcup:v1`, plus `lastcup:d
 |---|---|
 | First visit, nothing saved | The sleep question with a time filled in, then chips that preview their effect. No empty chart. |
 | Nothing logged yet | "0 mg" and "Nothing logged yet. Tap what you're drinking…" right above the chips |
-| Under your line at sleep | Amber hero, "Under 50 mg by 7:30 AM, before you sleep." |
-| Over your line at sleep | Coral hero, "Over your 50 mg line at sleep. Clear by …" |
+| Under your line at sleep | Amber hero, "Under 50 mg by 7:30 AM, before you sleep.", and "Room for 20 mg more at sleep" |
+| Over your line at sleep | Coral hero, "Over your 50 mg line at sleep. Under it by …" |
 | A chip would push you over | That chip turns coral before you tap, with a one-line key |
 | Already over | "You're already over your 50 mg line at sleep, so each one adds to it." |
 | Just logged or removed | "Logged Red Bull, 80 mg. Undo" for 20 s |

@@ -21,7 +21,7 @@ The five things the brief says to be ready to explain. About a minute each. Open
 ## 3. Retention: what brings someone back, and what it remembers
 
 - **The trigger is real:** every shift you're deciding "can I have another coffee?" That's the moment to open it.
-- **Coming back after your sleep:** "Welcome back. Last shift: 2 drinks, and 93 mg still in you when you slept yesterday at 9:00 AM." Then a bar per recent sleep: "Over your 50 mg line at 4 of your last 6 sleeps." That pattern is the reason to keep logging.
+- **Coming back after your sleep:** "Welcome back. Last time: 2 drinks, and 93 mg still in you when you slept yesterday at 9:00 AM." Then a bar per recent sleep: "Over your 50 mg line at 4 of your last 6 sleeps." That pattern is the reason to keep logging.
 - **One tap:** "Same as last time: 9:00 AM today".
 - **What it remembers, in localStorage only:** drinks for 30 days, the last 14 sleeps, the next sleep, the half-life and sleep line, custom one-tap drinks (most-used float to the front), and even a half-typed form.
 
@@ -29,7 +29,7 @@ The five things the brief says to be ready to explain. About a minute each. Open
 
 - **Round 1, as a night-shift nurse:** the Log button was hidden behind the nav. Chips didn't show their mg. The "now" dot sat at 0 right after a drink. A one-off drink shouldn't need a name. 15 items, each fixed in its own commit.
 - **The strict-grader review:** the biggest lesson. My README claimed the name was optional, but the checkbox defaulted to ticked, so it wasn't. "2 shots" silently logged 2 mg. Leaving the form lost what you typed, which the brief explicitly asks about. Agents are good at finding gaps between what you *say* the app does and what it *does*.
-- **Round 2, as a PhD student:** see the README for what it found and what changed.
+- **Round 2, as a PhD student at 3pm:** she logged her 1pm cold brew at 3pm because the time defaulted to now, so I added one-tap "2 h ago". She had to do 38 + 25 in her head to know if a coffee was OK, so it now says "Room for 10 mg more". "Last shift" meant nothing to a student, so it's now "Last time". And it caught four places where two numbers on screen disagreed.
 - **What I learned:** test as a specific person at a specific time of day. Most bugs only showed up for "a nurse at 7:15am" or "a student at 3:30pm", not for "a user".
 
 ## 5. Agentic workflow: how I worked with the agent; what was easy and hard

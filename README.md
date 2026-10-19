@@ -8,13 +8,17 @@ Built for people whose bedtime moves: night-shift nurses, rotating-shift healthc
 
 ![First visit → first useful answer → the form and its errors → coming back](docs/flow-strip.png)
 
-<sub>1 First visit: one question, already answered · 2 One tap later: what's left at sleep · 3 The form: errors next to each field, input kept · 4 Coming back: last shift and recent sleeps. Live site, phone size, 4am.</sub>
+<sub>1 First visit: one question, already answered · 2 One tap later: what's left at sleep · 3 The form: errors next to each field, input kept · 4 Coming back: last time and recent sleeps. Live site, phone size, 4am.</sub>
+
+On a laptop, Now uses two columns:
+
+![Now on a laptop: the number and curve on the left, the drinks on the right](docs/desktop-now.png)
 
 ## Demo in 30 seconds
 
 1. Open the app. One question: when are you sleeping next? At 4am it has already filled in 9:00 AM. Tap **Next**.
 2. Every drink shows what it would leave at sleep *before* you tap it: "Red Bull · 80 mg · +30 at sleep". Tap **Red Bull**: "30 mg still in you at your 9:00 AM sleep".
-3. Come back on your next shift: "Welcome back. Last shift: 2 drinks, and 93 mg still in you when you slept yesterday at 9:00 AM", a bar for each recent sleep, and one tap for "Same as last time".
+3. Come back on your next shift: "Welcome back. Last time: 2 drinks, and 93 mg still in you when you slept yesterday at 9:00 AM", a bar for each recent sleep, and one tap for "Same as last time".
 
 ## Where each part of the brief is
 
@@ -79,7 +83,8 @@ flowchart TD
   B -- yes --> C["Tap the chip"]
   C --> D{"Over your line<br/>at sleep?"}
   D -- no --> E["Amber hero<br/>Under 50 mg by 7:30 AM, before you sleep."]
-  D -- yes --> F["Coral hero<br/>Over your 50 mg line at sleep.<br/>Clear by 1:01 PM, 4 h after your sleep time."]
+  D -- yes --> F["Coral hero<br/>Over your 50 mg line at sleep.<br/>Under it by 1:01 PM, 4 h after your sleep time."]
+  E --> R["Room for 20 mg more at sleep<br/>before your 50 mg line."]
   E & F --> U["Logged Red Bull, 80 mg. Undo<br/>(for 20 s; Remove stays on each drink)"]
   B -- "no: Other…" --> L["/log  Log a drink<br/>(the form, below)"]
   L -- "Log drink" --> A
@@ -88,7 +93,7 @@ flowchart TD
 
 #### The form and its errors (`/log`)
 
-Fields: **Drink** (optional for a one-off) · **Caffeine, in mg** · **When did you start it?** (defaults to now) · ☐ **Add it to my one-tap drinks** (unticked).
+Fields: **Drink** (optional for a one-off) · **Caffeine, in mg** · **When did you start it?** (defaults to now, with one-tap Just now / 30 min / 1 h / 2 h / 3 h ago) · ☐ **Add it to my one-tap drinks** (unticked).
 
 ```mermaid
 flowchart LR
@@ -110,10 +115,10 @@ flowchart LR
 flowchart TD
   A([Open on the next shift]) --> B{"Is the saved sleep<br/>still ahead?"}
   B -- "yes" --> N["/ Now<br/>your drinks from the last 24 h,<br/>the chips you use most first"]
-  B -- "no, it passed" --> S["/sleep<br/>Welcome back.<br/>Last shift: 2 drinks, and 93 mg still in you<br/>when you slept yesterday at 9:00 AM."]
+  B -- "no, it passed" --> S["/sleep<br/>Welcome back.<br/>Last time: 2 drinks, and 93 mg still in you<br/>when you slept yesterday at 9:00 AM."]
   S --> P["Over your 50 mg line at 4 of your last 6 sleeps.<br/>one bar per sleep, Tue … Sun"]
   P -- "Same as last time: 9:00 AM today" --> N
-  P -- "pick a new time, Use the time above" --> N
+  P -- "change the time, then Use the time above" --> N
 ```
 
 Everything lives in `localStorage` on this device (`lastcup:v1`, plus `lastcup:draft` for a half-filled form): drinks for 30 days, the next sleep, the last 14 sleeps, settings and custom chips.
@@ -124,8 +129,8 @@ Everything lives in `localStorage` on this device (`lastcup:v1`, plus `lastcup:d
 |---|---|
 | First visit, nothing saved | The sleep question with a time filled in, then chips that preview their effect. No empty chart. |
 | Nothing logged yet | "0 mg" and "Nothing logged yet. Tap what you're drinking…" right above the chips |
-| Under your line at sleep | Amber hero, "Under 50 mg by 7:30 AM, before you sleep." |
-| Over your line at sleep | Coral hero, "Over your 50 mg line at sleep. Clear by …" |
+| Under your line at sleep | Amber hero, "Under 50 mg by 7:30 AM, before you sleep.", and "Room for 20 mg more at sleep" |
+| Over your line at sleep | Coral hero, "Over your 50 mg line at sleep. Under it by …" |
 | A chip would push you over | That chip turns coral before you tap, with a one-line key |
 | Already over | "You're already over your 50 mg line at sleep, so each one adds to it." |
 | Just logged or removed | "Logged Red Bull, 80 mg. Undo" for 20 s |
@@ -150,7 +155,7 @@ In plan mode on 16 October 2026, the agent proposed the routes, states and error
 | Route `/history`: past drinks and sleeps | **Cut** | You only act on the last 24 h, so it's a list on Now. Past *sleeps* came back later as bars on the welcome-back card |
 | Route `/settings`: half-life, sleep line | **Kept** | People's half-life varies from 3 to 7 h |
 | State: first visit, nothing saved | **Kept** | No empty chart: the question, then chips |
-| State: over the line at sleep | **Kept** | A coral hero and "Clear by …" |
+| State: over the line at sleep | **Kept** | A coral hero and "Under it by …" |
 | State: confirm before logging ("this puts you at 110 mg"), one extra tap | **Cut** | Replaced by chips that show "+40 at sleep" *before* you tap: the same warning with no extra step |
 | State: returning after the sleep has passed | **Kept** | Became the welcome-back card |
 | Error: mg missing or not a number | **Kept, then split** | "2 shots" needs a different message from an empty field |
@@ -222,7 +227,37 @@ The brief asks the agent to use the deployed tool as a brand-new user. We did th
 
 ### Round 2: PhD student, 19 October
 
-ROUND2_PLACEHOLDER
+**Persona and goal:** Priya, a 4th-year PhD student at 3:30pm, writing her thesis. She sleeps around 1am, but it varies. She had a large cold brew (about 200 mg, not a preset) at 1pm and wants another coffee now. Her goal: "Find out whether a coffee now will still be in me at 1 AM, log what I've actually had today, and see if I'm going to be OK." Then come back the next afternoon, and again a few days later. The tester set the browser's timezone so it was mid-afternoon, and moved the saved times back to simulate the return visits.
+
+**What happened:**
+- **First visit:** typed 01:00, "That's 1:00 AM tomorrow, in 9 h 48 min", then Next. The Coffee chip read "95 mg, +24 at sleep" within 3 taps.
+- **Main task:** "cold brew lg" / "200mg" was accepted as 200. But the time was left at now, so it logged at 3:13pm, and the only fix was Remove and re-log with the time changed. After that: 38 mg at sleep, with Coffee at "+25" in coral. Working out "38 + 25 is over 50" was left to her. That was 12–14 taps, about 60–90 s.
+- **Errors:** empty mg, "two hundred", 2000 and an 11pm start time each got their own message under the field, and what she typed was kept every time.
+- **Coming back:** "Welcome back. Last shift: 2 drinks, 62 mg…", and days later, bars reading "Over your 50 mg line at 2 of your last 2 sleeps".
+
+**Its feedback, and what changed:**
+
+| Feedback (most important first) | Change |
+|---|---|
+| A drink had earlier is easy to log at the wrong time: the time defaults to now, below the fold | One-tap "Just now / 30 min / 1 h / 2 h / 3 h ago" under the time field (`f049ae6`) |
+| No direct answer to "is one more OK?"; she had to add 38 + 25 | "Room for 10 mg more at sleep before your 50 mg line", above the chips (`c0a275b`) |
+| "Last shift" makes no sense for a student | "Last time" (`b440fd6`) |
+| The welcome card said 52 mg and the bar for the same sleep said 54 | Both count every drink before that sleep (`b440fd6`) |
+| "2 mg still in you" next to "Nothing logged yet" | That line only shows when nothing is in you (`c0a275b`) |
+| "200 mg drunk, 209 mg in you now" looks wrong | "In you now: 209 mg (9 from before that)" (`c0a275b`) |
+| "Clear by 2:32 AM" really means under 50 mg; elsewhere it says "Under 50 mg by" | One phrase: "Under it by 2:32 AM" (`c0a275b`) |
+| The pinned Log button covers the second line of an error | The first error scrolls to the middle of the screen (`f049ae6`) |
+| Two buttons on the welcome screen that do the same thing | "Use the time above" only shows once you change the time (`b440fd6`) |
+| After Undo, keyboard focus drops to the page | It goes back to the chips (`c0a275b`) |
+
+**Not changed, and why:**
+- **Editing a logged drink's time:** Remove and re-log covers it, and the quick times make re-logging two taps.
+- **Asking when she actually slept:** the history assumes the planned time. It's a fair point, but it adds a question to every return, and the brief asks to remove steps.
+- **A custom chip pushing Espresso to /log:** intended, since the grid shows the five drinks you use most.
+- **The 400 mg note didn't appear at 390 mg:** that's correct.
+- **The desktop nav stays at the bottom:** kept, so there's one navigation pattern on every screen size.
+
+**Re-check:** the same scenario was replayed against a production build of the fixes in that timezone: "Room for 10 mg more", Coffee in coral, "2 h ago" set the time to 1:23pm, the card and bars agreed, and one button showed on return.
 
 ## A strict review against the brief
 
