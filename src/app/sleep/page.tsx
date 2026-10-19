@@ -106,9 +106,12 @@ function SleepForm({
               </span>
             </Button>
           )}
-          <Button full type="submit" variant={returning ? "secondary" : "primary"}>
-            {firstVisit ? "Next: what are you drinking?" : returning ? "Use the time above" : "Save sleep time"}
-          </Button>
+          {/* "Use the time above" only when it's different, or the two buttons do the same thing. */}
+          {!(returning && sameTime !== null && picked === sameTime) && (
+            <Button full type="submit" variant={returning ? "secondary" : "primary"}>
+              {firstVisit ? "Next: what are you drinking?" : returning ? "Use the time above" : "Save sleep time"}
+            </Button>
+          )}
         </ActionBar>
       </form>
     </div>
@@ -119,21 +122,28 @@ function SleepForm({
 function WelcomeBack({ state, lastSleep }: { state: LastCupState; lastSleep: number }) {
   const now = useNow();
   const shift = state.drinks.filter((d) => d.at <= lastSleep && d.at > lastSleep - 24 * HOUR);
-  const atSleep = Math.round(remainingAt(shift, lastSleep, state.halfLifeH));
+  // Same rule as the bars below: everything drunk before that sleep, so the numbers agree.
+  const atSleep = Math.round(
+    remainingAt(
+      state.drinks.filter((d) => d.at <= lastSleep),
+      lastSleep,
+      state.halfLifeH,
+    ),
+  );
   const day = dayLabel(lastSleep, now);
   const when = day === "today" ? `at ${clock(lastSleep)}` : `${day} at ${clock(lastSleep)}`;
   // Newest first: the sleep that just passed, then the history.
   const sleeps = [lastSleep, ...state.pastSleeps.filter((t) => t !== lastSleep)].slice(0, 7);
   return (
     <section
-      aria-label="Last shift"
+      aria-label="Last time"
       className="mb-8 rounded-2xl border border-line bg-surface px-5 py-4"
     >
       <p className="font-display text-xl font-semibold">Welcome back.</p>
       <p className="mt-1 text-muted tabular-nums">
         {shift.length === 0
           ? `You last slept ${when}, with no drinks logged before it.`
-          : `Last shift: ${shift.length} ${shift.length === 1 ? "drink" : "drinks"}, and ${atSleep} mg still in you when you slept ${when}.`}
+          : `Last time: ${shift.length} ${shift.length === 1 ? "drink" : "drinks"}, and ${atSleep} mg still in you when you slept ${when}.`}
       </p>
       {sleeps.length > 1 && <PastSleeps state={state} sleeps={sleeps} now={now} />}
     </section>
