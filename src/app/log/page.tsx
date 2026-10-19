@@ -24,6 +24,19 @@ const MAX_MG = 1000;
 
 type Errors = Partial<Record<"name" | "mg" | "at", string>>;
 
+const AGO = [
+  { label: "Just now", mins: 0 },
+  { label: "30 min ago", mins: 30 },
+  { label: "1 h ago", mins: 60 },
+  { label: "2 h ago", mins: 120 },
+  { label: "3 h ago", mins: 180 },
+];
+
+/** Minutes between a datetime-local value and now, to the nearest 5 (so a pill stays lit). */
+function agoOf(value: string) {
+  return Math.round((Date.now() - new Date(value).getTime()) / 300_000) * 5;
+}
+
 /** "YYYY-MM-DDTHH:MM" in local time, for <input type="datetime-local">. */
 function toLocalInput(ms: number) {
   const d = new Date(ms - new Date(ms).getTimezoneOffset() * 60_000);
@@ -130,7 +143,10 @@ function LogForm({
     const first = (["name", "mg", "at"] as const).find((k) => result.errors[k]);
     if (first) {
       // Move focus to the first field that needs fixing; what was typed stays.
-      formRef.current?.querySelector<HTMLInputElement>(`[name="${first}"]`)?.focus();
+      // Centred, so the error under it isn't hidden behind the pinned Log drink button.
+      const el = formRef.current?.querySelector<HTMLInputElement>(`[name="${first}"]`);
+      el?.focus({ preventScroll: true });
+      el?.scrollIntoView({ block: "center" });
       return;
     }
 
@@ -222,8 +238,29 @@ function LogForm({
             setErrors((er) => ({ ...er, at: undefined }));
           }}
           error={errors.at}
-          hint="When you started drinking it; close enough is fine. Leave it as now if you just did."
+          hint="When you started drinking it; close enough is fine."
         />
+        {/* Most drinks typed here were had a while ago ("the cold brew at 1"), so one tap sets it. */}
+        <ul aria-label="Quick times" className="-mt-3 flex flex-wrap gap-2">
+          {AGO.map(({ label, mins }) => {
+            const picked = mins === 0 ? !atTouched : atTouched && agoOf(at) === mins;
+            return (
+              <li key={label}>
+                <Pill
+                  aria-pressed={picked}
+                  className={picked ? "border-amber text-amber" : ""}
+                  onClick={() => {
+                    setAt(toLocalInput(Date.now() - mins * 60_000));
+                    setAtTouched(mins !== 0);
+                    setErrors((er) => ({ ...er, at: undefined }));
+                  }}
+                >
+                  {label}
+                </Pill>
+              </li>
+            );
+          })}
+        </ul>
 
         <Checkbox
           label="Add it to my one-tap drinks"
