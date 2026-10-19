@@ -30,6 +30,12 @@ export default function NowPage() {
   const now = Math.max(tick, ...(state?.drinks.map((d) => d.at) ?? []));
   // The "Logged …, Undo" / "Removed …, Undo" line, for chips, the /log form and Remove alike.
   const [toast, setToast] = useState<{ text: string; undo: () => void } | null>(null);
+  // Undo is for a mis-tap, so it goes after 20 s rather than offering to undo hours later.
+  useEffect(() => {
+    if (!toast) return;
+    const id = setTimeout(() => setToast(null), 20_000);
+    return () => clearTimeout(id);
+  }, [toast]);
 
   function drop(id: string) {
     update((s) => ({ ...s, drinks: s.drinks.filter((d) => d.id !== id) }));
@@ -62,7 +68,9 @@ export default function NowPage() {
   const { drinks, halfLifeH, thresholdMg } = state;
   const atSleep = Math.round(remainingAt(drinks, sleep, halfLifeH));
   const over = atSleep > thresholdMg;
-  const clear = clearBy(drinks, now, halfLifeH, thresholdMg);
+  // The screen shows whole mg, so "under the line" means it rounds to the line or below;
+  // the clear-by time uses the same rule, or 50.3 mg would read "under 50 by 9:02" at a 9:00 sleep.
+  const clear = clearBy(drinks, now, halfLifeH, thresholdMg + 0.5);
   const today = drunkInLast24h(drinks, now);
   const options = drinkOptions(state).slice(0, 5);
   const recent = drinks
@@ -153,11 +161,17 @@ export default function NowPage() {
             Other…
           </Button>
         </div>
-        {options.some((o) => atSleep + Math.round(doseRemaining(o.mg, now, sleep, halfLifeH)) > thresholdMg) && (
+        {over ? (
           <p className="mt-2 text-sm text-muted">
-            <span className="text-coral">Coral</span> ones would put you over your {thresholdMg} mg
-            line at sleep.
+            You&rsquo;re already over your {thresholdMg} mg line at sleep, so each one adds to it.
           </p>
+        ) : (
+          options.some((o) => atSleep + Math.round(doseRemaining(o.mg, now, sleep, halfLifeH)) > thresholdMg) && (
+            <p className="mt-2 text-sm text-muted">
+              <span className="text-coral">Coral</span> ones would put you over your {thresholdMg} mg
+              line at sleep.
+            </p>
+          )
         )}
       </section>
 
