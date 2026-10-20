@@ -1,6 +1,6 @@
-# Talking points for class
+# Class discussion notes
 
-The five things the brief says to be ready to explain. About a minute each. Open the live site on your phone, and have the README strip ready as a backup.
+My notes for the five things the brief asks to be ready to explain, about a minute each. I'll demo on the live site, with the README's screenshots as a backup.
 
 ## 1. Design process: the tool, the user, what brings them back
 
@@ -8,13 +8,15 @@ The five things the brief says to be ready to explain. About a minute each. Open
 - **The user:** people whose bedtime moves, like night-shift nurses (sleep at 9am) and PhD students (sleep at 1am, or 3am).
 - **The gap:** every caffeine app I found assumes a fixed bedtime. RISE's own help centre says it isn't reliable on rotating shifts. Timeshifter wants an account and your whole shift calendar first.
 - **The idea:** ask one question, "When are you sleeping next?", every time, and make it one tap to keep the last answer. Then each drink shows what it'll leave at sleep before you tap it.
-- **Process:** I wrote the main task as one sentence with arrows, worked out the flows in plan mode, had subagents study three tools, built one route per step, then tested it with agents and fixed what they found.
+- **How I got there:** I wanted something in healthcare, picked caffeine, and widened it to energy drinks for people working nights. I chose rotating shifts over a fixed schedule, because that's what nurses and PhD students actually have.
+- **Process:** I wrote the main task as one sentence with arrows, worked out the flows in plan mode, had subagents study three tools, built one route per step, then had agents test and review it, and fixed what they found.
+- **Style:** I didn't reuse my Assignment 2 design systems. It's used at 3am, so I asked for research on night-time design instead, which led to the warm dark palette with no white and no blue.
 
 ## 2. Onboarding: what someone new sees, and how they get value right away
 
-- No account, no quiz, no tour. The first screen is one question, with a sensible answer already filled in: at 4am it suggests 9:00 AM.
-- Tap Next, and you see chips that preview their effect, "Red Bull · 80 mg · +30 at sleep". So before logging anything you've already learned something.
-- One tap on Red Bull: "30 mg still in you at your 9:00 AM sleep", a curve, and "Under 50 mg by 7:30 AM". That's 2 taps and about 10 seconds.
+- No account, no quiz, no tour. The first screen is one question, with a sensible answer already filled in: at 4:27am it suggests 9:00 AM.
+- Tap Next, and you see chips that preview their effect, "Red Bull · 80 mg · +43 at sleep". So before logging anything you've already learned something.
+- One tap on Red Bull: "43 mg still in you at your 9:00 AM sleep", a curve, "Under 50 mg by 7:46 AM", and "Room for 7 mg more". That's 2 taps and about 10 seconds.
 - Never an empty screen. With nothing logged, it says "Tap what you're drinking to see what it leaves at sleep" right above the chips.
 - **Research behind it:** RISE asks 30+ questions before anything useful. I took the opposite path: learn by doing.
 
@@ -28,7 +30,7 @@ The five things the brief says to be ready to explain. About a minute each. Open
 ## 4. The agent's feedback: what I learned, what changed
 
 - **Round 1, as a night-shift nurse:** the Log button was hidden behind the nav. Chips didn't show their mg. The "now" dot sat at 0 right after a drink. A one-off drink shouldn't need a name. 15 items, each fixed in its own commit.
-- **The strict-grader review:** the biggest lesson. My README claimed the name was optional, but the checkbox defaulted to ticked, so it wasn't. "2 shots" silently logged 2 mg. Leaving the form lost what you typed, which the brief explicitly asks about. Agents are good at finding gaps between what you *say* the app does and what it *does*.
+- **The two reviews against the brief:** the biggest lesson. My README claimed the name was optional, but the checkbox defaulted to ticked, so it wasn't. "2 shots" silently logged 2 mg. Leaving the form lost what you typed, which the brief explicitly asks about. The second review used three reviewers, and the keyboard one found focus getting lost after Remove and Clear data. Agents are good at finding gaps between what you *say* the app does and what it *does*.
 - **Round 2, as a PhD student at 3pm:** she logged her 1pm cold brew at 3pm because the time defaulted to now, so I added one-tap "2 h ago". She had to do 38 + 25 in her head to know if a coffee was OK, so it now says "Room for 10 mg more". "Last shift" meant nothing to a student, so it's now "Last time". And it caught four places where two numbers on screen disagreed.
 - **What I learned:** test as a specific person at a specific time of day. Most bugs only showed up for "a nurse at 7:15am" or "a student at 3:30pm", not for "a user".
 
@@ -38,4 +40,4 @@ The five things the brief says to be ready to explain. About a minute each. Open
 - Plan mode for flows, then small commits. Subagents in parallel for research, testing and review.
 - I made the agent prove things: contrast is a script, the flows and the keyboard order were checked in headless Chrome, and the checklist only gets ticked after verification.
 - **Easy:** shared components first (Button, Field, Chip), so most fixes touched one file.
-- **Hard:** things that only break in a real browser, like fonts not loading, timing (a drink logged in the same 30 s didn't count), and a test browser killed before localStorage was saved, which looked like an app bug. Also, the agent will happily write a README that's ahead of the code, so you have to check it.
+- **Hard:** things that only break in a real browser, like fonts not loading, timing (a drink logged in the same 30 s didn't count), and a test browser killed before localStorage was saved, which looked like an app bug. Also, the agent will happily write a README that's ahead of the code, so I had to check it.

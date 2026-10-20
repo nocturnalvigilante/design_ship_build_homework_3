@@ -4,7 +4,7 @@ Main task, as one sentence:
 
 > I log a Red Bull at 2am on my night shift → it shows how much will still be in me when I sleep at 9am → I come back on my next shift, and it remembers my drinks and my sleep times.
 
-Worked out with the agent in plan mode on 16 October 2026, then revised after two first-run checks and a strict review against the brief. The labels below are the app's actual wording. What the agent proposed, and what we kept or cut, is in the README under [Plan mode](README.md#plan-mode-what-the-agent-proposed-and-what-we-kept).
+Worked out with the agent in plan mode on 16 October 2026, then revised after two first-run checks and two reviews against the brief. The labels below are the app's actual wording. What the agent proposed, and where each proposal ended up, is in the README under [Plan mode](README.md#plan-mode-what-the-agent-proposed-and-where-it-ended-up).
 
 ## Routes and navigation
 
