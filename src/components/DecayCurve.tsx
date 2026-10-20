@@ -47,11 +47,12 @@ export function DecayCurve({
       <path d={area} fill="var(--color-amber)" opacity="0.12" />
 
       <line x1={PAD.left} x2={W - PAD.right} y1={y(thresholdMg)} y2={y(thresholdMg)} stroke="var(--color-muted)" strokeDasharray="4 4" strokeWidth="1" />
-      <text x={PAD.left} y={y(thresholdMg) - 5} textAnchor="start" fontSize="11" fill="var(--color-muted)" className="tabular-nums">
-        {thresholdMg} mg
-      </text>
 
       <path d={line} fill="none" stroke="var(--color-amber)" strokeWidth="2.5" strokeLinejoin="round" />
+      {/* After the curve, with a page-coloured outline, so the curve can't run through it. */}
+      <text x={PAD.left} y={y(thresholdMg) - 5} textAnchor="start" fontSize="11" fill="var(--color-muted)" stroke="var(--color-bg)" strokeWidth="4" paintOrder="stroke" className="tabular-nums">
+        {thresholdMg} mg
+      </text>
 
       <line x1={x(sleep)} x2={x(sleep)} y1={PAD.top} y2={base} stroke={sleepColor} strokeWidth="1.5" />
       <text x={Math.min(x(sleep), W - 40)} y={H - 8} textAnchor="middle" fontSize="11" fill={sleepColor} className="tabular-nums">
