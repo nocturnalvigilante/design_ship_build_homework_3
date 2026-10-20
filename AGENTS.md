@@ -4,7 +4,7 @@ Context for any coding agent working in this repo. MPCS 51238 Design, Build, Shi
 
 ## What this is
 
-**Last Cup** (working name) is a caffeine tracker for people whose bedtime moves: night-shift nurses, rotating-shift healthcare workers, and PhD students. You log a drink, and it tells you how much caffeine will still be in your body when you next sleep, whatever time of day that is.
+**Last Cup** is a caffeine tracker for people whose bedtime moves: night-shift nurses, rotating-shift healthcare workers, and PhD students. You log a drink, and it tells you how much caffeine will still be in your body when you next sleep, whatever time of day that is.
 
 Main task, as one sentence:
 
@@ -16,17 +16,17 @@ Main task, as one sentence:
 - **No database, backend, accounts, API routes or external APIs.** If something seems to need one, stop and ask instead.
 - **No new npm packages** without asking first. Charts are hand-drawn SVG.
 - **One route per flow step**, with shared navigation.
-- **Shared components** (`src/components/`): Button, Field (label + input + error), DrinkChip, and so on, used everywhere. Don't hand-roll a one-off button or input.
+- **Shared components** (`src/components/`): Button, Field (label + input + error), Checkbox, Pill, DrinkChip, ActionBar, and so on, used everywhere. Don't hand-roll a one-off button or input.
 - **Forms:** one column, a real `<label>` on every field, and the error sits next to its field and says what to do next ("Enter the caffeine in mg, it's on the can", not "Invalid input"). Never clear what the person typed when there's an error.
 - **Accessibility:** everything works by keyboard with a visible focus ring, and text contrast is at least 4.5:1 (body) and 3:1 (large). Check contrast; don't eyeball it.
-- **No one-shot work.** Make small commits with descriptive messages. The commit history is graded.
+- **Small commits**, one change each, with a message that says what changed and why, so the history shows how the tool was built.
 
 ## Design direction (from `research.md`)
 
 - Dark by default and warm, because it's used at 3am: no pure white, no blue or green accents, no large bright areas.
 - Tokens: bg `#14110F`, surface `#1F1A16`, text `#E8DCCB`, muted `#A8998A`, accent/curve amber `#F2A541`, over-threshold coral `#E0705A`.
 - Type: Inter for text, Space Grotesk for the hero number, `tabular-nums` on every figure.
-- The hero is one big number ("62 mg still in you at your 9:00 sleep"), then a "clear by HH:MM" line, then an amber decay curve with a "now" dot and a sleep marker. The main actions are at the bottom, in thumb reach, with tap targets of at least 44px.
+- The hero is one big number ("43 mg still in you at your 9:00 AM sleep"), then an "Under 50 mg by 7:46 AM" line, then an amber decay curve with a "now" dot and a sleep marker. The main actions are at the bottom, in thumb reach, with tap targets of at least 44px.
 
 ## The model
 
@@ -36,6 +36,7 @@ Main task, as one sentence:
 
 ## Working here
 
-- The cluster's `fe01` is a login node. **Don't run builds there**; use `fe02` (`ssh rajhansini@fe02.ai.cs.uchicago.edu`) with Node 22 from `~/.local/node/bin`.
-- `npm run dev`, `npm run build`, `npm run lint`.
+- Node 22. On the lab cluster, build on a compute host, never on the login node.
+- `npm run dev`, `npm run build`, `npm run lint`, `node scripts/contrast.mjs`, `node scripts/check-diagrams.mjs`.
+- Times are written the way the device writes them (`clock()` in `src/lib/time.ts`), and the docs quote the app's exact wording. If you change a string, update `flows.md` and the README.
 - `CHECKLIST.md` maps every brief requirement to evidence. Tick an item only once it has been verified.

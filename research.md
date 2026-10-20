@@ -42,7 +42,7 @@ The gap: RISE and Timeshifter make you work (30+ steps, a login, a paywall, a fu
 So our first visit is **two taps, no quiz, no account**:
 
 1. One question: **"When are you sleeping next?"** It suggests a time, and any hour works, including 9am after a night shift.
-2. Drink chips (Red Bull, Monster, coffee, chai…). Tap one and the answer appears at once: **"62 mg still in you at your 9:00 sleep"**.
+2. Drink chips (Red Bull, Monster, coffee, chai…). Tap one and the answer appears at once, something like **"62 mg still in you at your 9:00 sleep"** (the wording planned here; the built app says "62 mg still in you at your 9:00 AM sleep").
 
 We learn the rest by doing: the next sleep time is re-asked each visit (one tap to keep the last one), and usual drinks rise to the top. That handles rotating shifts with no calendar to fill in.
 

@@ -28,8 +28,8 @@ flowchart LR
 
 ```mermaid
 flowchart TD
-  A([Open Last Cup, nothing saved]) --> B["/sleep<br/>When are you sleeping next?<br/>a time is already filled in:<br/>the sooner of 9:00 AM and 11:00 PM"]
-  B -- "time cleared" --> E1["Next to the field:<br/>Pick a time, like 09:00. Any hour works,<br/>including mornings after a night shift."]
+  A([Open Last Cup at 2am, nothing saved]) --> B["/sleep<br/>When are you sleeping next?<br/>a time is already filled in: the soonest<br/>of 9:00 AM, 11:00 PM and 1:00 AM"]
+  B -- "time cleared" --> E1["Next to the field:<br/>Pick a time, like 9:00 AM. Any hour works,<br/>including mornings after a night shift."]
   E1 --> B
   B -- "Next: what are you drinking?" --> C["/ Now<br/>0 mg still in you at your 9:00 AM sleep<br/>Nothing logged yet. Tap what you're drinking<br/>to see what it leaves at sleep."]
   C --> D["Each chip previews itself before you tap:<br/>Red Bull · 80 mg · +30 at sleep<br/>coral if it would put you over your line"]
@@ -45,7 +45,7 @@ flowchart TD
   A["/ Now"] --> B{"Is the drink<br/>a chip?"}
   B -- yes --> C["Tap the chip"]
   C --> D{"Over your line<br/>at sleep?"}
-  D -- no --> E["Amber hero<br/>Under 50 mg by 7:30 AM, before you sleep."]
+  D -- no --> E["Amber hero (Red Bull at 2am, sleep at 9am)<br/>Under 50 mg by 5:19 AM, before you sleep."]
   D -- yes --> F["Coral hero<br/>Over your 50 mg line at sleep.<br/>Under it by 1:01 PM, 4 h after your sleep time."]
   E --> R["Room for 20 mg more at sleep<br/>before your 50 mg line."]
   E & F --> U["Logged Red Bull, 80 mg. Undo<br/>(for 20 s; Remove stays on each drink)"]
@@ -66,8 +66,10 @@ flowchart LR
   L -- "in the future" --> L4["That time hasn't happened yet.<br/>Pick when you started drinking it."]
   L -- "over a day ago" --> L5["That's over a day ago, so it won't change your<br/>next sleep. Pick a time in the last 24 hours."]
   L -- "ticked, no name" --> L6["Name it to keep it as a one-tap drink,<br/>like 'Night coffee'. Or untick the box below."]
-  L -- "ticked, name taken" --> L7["You already have Coffee (95 mg) as a one-tap<br/>drink. Call this one something else."]
-  L1 & L2 & L3 & L4 & L5 & L6 & L7 --> K["Under its own field · focus moves to the first ·<br/>nothing typed is cleared · goes as you edit"]
+  L -- "ticked, name taken" --> L7["You already have Coffee (95 mg) as a one-tap drink.<br/>Call this one something else, like 'Big coffee',<br/>or untick the box below."]
+  L -- "0 or less" --> L8["Enter more than 0 mg, like 80 for a Red Bull."]
+  L -- "time cleared" --> L9["Pick when you started drinking it.<br/>Leave it as now if you just did."]
+  L1 & L2 & L3 & L4 & L5 & L6 & L7 & L8 & L9 --> K["Under its own field · focus moves to the first ·<br/>nothing typed is cleared · goes as you edit"]
 ```
 
 "180", "180 mg", "180mg large" and "1,000" are all read as numbers. Leave mid-form and come back, and the form says "Kept what you typed last time" with a **Start over** button.
@@ -79,12 +81,12 @@ flowchart TD
   A([Open on the next shift]) --> B{"Is the saved sleep<br/>still ahead?"}
   B -- "yes" --> N["/ Now<br/>your drinks from the last 24 h,<br/>the chips you use most first"]
   B -- "no, it passed" --> S["/sleep<br/>Welcome back.<br/>Last time: 2 drinks, and 96 mg still in you<br/>when you slept yesterday at 9:00 AM."]
-  S --> P["Over your 50 mg line at 4 of your last 6 sleeps.<br/>one bar per sleep, Tue … Sun"]
+  S --> P["Over your 50 mg line at 4 of your last 6 sleeps.<br/>one bar per sleep, labelled by day"]
   P -- "Same as last time: 9:00 AM today" --> N
   P -- "change the time, then Use the time above" --> N
 ```
 
-Everything lives in `localStorage` on this device (`lastcup:v1`, plus `lastcup:draft` for a half-filled form): drinks for 30 days, the next sleep, the last 14 sleeps, settings and custom chips.
+Everything lives in `localStorage` on this device (`lastcup:v1`, plus `lastcup:draft` for a half-filled form and `lastcup:threshold-draft` for an unsaved sleep line): drinks for 30 days, the next sleep, the last 14 sleeps, settings and custom chips.
 
 ## States
 
@@ -92,16 +94,16 @@ Everything lives in `localStorage` on this device (`lastcup:v1`, plus `lastcup:d
 |---|---|
 | First visit, nothing saved | The sleep question with a time filled in, then chips that preview their effect. No empty chart. |
 | Nothing logged yet | "0 mg" and "Nothing logged yet. Tap what you're drinking…" right above the chips |
-| Under your line at sleep | Amber hero, "Under 50 mg by 7:30 AM, before you sleep.", and "Room for 20 mg more at sleep" |
+| Under your line at sleep | Amber hero, "Under 50 mg by 5:19 AM, before you sleep.", and "Room for 20 mg more at sleep" |
 | Over your line at sleep | Coral hero, "Over your 50 mg line at sleep. Under it by …" |
 | A chip would push you over | That chip turns coral before you tap, with a one-line key |
 | Already over | "You're already over your 50 mg line at sleep, so each one adds to it." |
 | Just logged or removed | "Logged Red Bull, 80 mg. Undo" for 20 s |
 | Past 400 mg in 24 h | A muted note (a reference, not advice) |
-| Returning, sleep passed | Welcome back, last shift, bars for recent sleeps, one-tap "Same as last time" |
+| Returning, sleep passed | Welcome back, last time, bars for recent sleeps (dated once they're a week old), one-tap "Same as last time" |
 | Returning, sleep still ahead | Straight to Now |
 | Half-filled form | "Kept what you typed last time. Start over" |
 | Unknown URL | "There's nothing on this page", with Back to Now |
 | Storage blocked (private mode) | Works for the visit, kept in memory |
 
-**A sleep time can't be in the past, by design.** "9:00" means the next time the clock reads 9:00, and the hint spells it out ("That's 9:00 AM today, in 4 h 49 min"). That removed an error we had planned, which is simpler than catching it.
+**A sleep time can't be in the past, by design.** "9:00" means the next time the clock reads 9:00, and the hint spells it out ("That's 9:00 AM today, in 4 h 49 min"). That removed an error I had planned, which is simpler than catching it.
