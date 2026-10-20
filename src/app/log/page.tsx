@@ -192,7 +192,11 @@ function LogForm({
                   setErrors((e) => ({ ...e, name: undefined, mg: undefined }));
                 }}
               >
-                {o.name} <span className="text-muted tabular-nums">{o.mg} mg</span>
+                {o.name}{" "}
+                <span className="text-muted tabular-nums">
+                  {o.estimate && "~"}
+                  {o.mg} mg
+                </span>
               </Pill>
             </li>
           ))}

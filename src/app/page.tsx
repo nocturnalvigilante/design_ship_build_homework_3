@@ -178,6 +178,7 @@ export default function NowPage() {
                     mg={o.mg}
                     addsAtSleep={adds}
                     wouldCross={atSleep + adds > thresholdMg}
+                    estimate={o.estimate}
                     onLog={() => log(o.name, o.mg)}
                   />
                 );
@@ -209,6 +210,10 @@ export default function NowPage() {
               )
             )}
           </section>
+
+          {options.some((o) => o.estimate) && (
+            <p className="mt-1 text-sm text-muted">~ means an estimate, not a label value we could check.</p>
+          )}
 
           {today > DAILY_REFERENCE_MG && (
             <div className="mt-4">

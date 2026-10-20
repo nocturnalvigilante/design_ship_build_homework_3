@@ -7,19 +7,22 @@ export function DrinkChip({
   mg,
   addsAtSleep,
   wouldCross,
+  estimate,
   onLog,
 }: {
   name: string;
   mg: number;
   addsAtSleep: number;
   wouldCross: boolean;
+  /** The mg is a best guess, not a label value: shown as "~160 mg". */
+  estimate?: boolean;
   onLog: () => void;
 }) {
   return (
     <button
       type="button"
       onClick={onLog}
-      aria-label={`Log ${name}, ${mg} mg. Adds ${addsAtSleep} mg at your sleep${
+      aria-label={`Log ${name}, ${estimate ? "about " : ""}${mg} mg. Adds ${addsAtSleep} mg at your sleep${
         wouldCross ? ", which puts you over your line" : ""
       }.`}
       className={`flex min-h-16 flex-col items-start justify-center rounded-xl border bg-surface px-2.5 py-2 text-left hover:bg-raised ${
@@ -28,7 +31,10 @@ export function DrinkChip({
     >
       <span className="text-base leading-tight font-semibold text-text">{name}</span>
       {/* The dose itself, so a bigger can than ours is easy to spot. */}
-      <span className="text-sm text-muted tabular-nums">{mg} mg</span>
+      <span className="text-sm text-muted tabular-nums">
+        {estimate && "~"}
+        {mg} mg
+      </span>
       {/* One line even at +103: a wrapped preview reads as two separate facts. */}
       <span
         className={`text-[13px] tracking-tight whitespace-nowrap tabular-nums ${
