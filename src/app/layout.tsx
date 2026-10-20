@@ -14,7 +14,8 @@ const spaceGrotesk = Space_Grotesk({
 
 export const metadata: Metadata = {
   // Each route sets its own title, so the tab and screen readers say where you are.
-  title: { default: "Last Cup", template: "%s · Last Cup" },
+  // "/" is a client page and can't export its own, so the default is Now's title.
+  title: { default: "Now · Last Cup", template: "%s · Last Cup" },
   description:
     "See how much caffeine will still be in you when you next sleep, whatever time of day that is.",
 };
