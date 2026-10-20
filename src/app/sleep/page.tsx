@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState, type FormEvent } from "react";
+import { useRef, useState, type FormEvent } from "react";
 import { ActionBar } from "@/components/ActionBar";
 import { Button } from "@/components/Button";
 import { Field } from "@/components/Field";
@@ -45,6 +45,7 @@ function SleepForm({
   const initial = lastSleep !== null && !returning ? lastSleep : (sameTime ?? suggestedSleep(now));
   const [value, setValue] = useState(toTimeInput(initial));
   const [error, setError] = useState<string>();
+  const formRef = useRef<HTMLFormElement>(null);
 
   const picked = nextOccurrence(value, now);
 
@@ -57,6 +58,8 @@ function SleepForm({
     e.preventDefault();
     if (picked === null) {
       setError("Pick a time, like 09:00. Any hour works, including mornings after a night shift.");
+      // Same as /log: focus goes to the field to fix, so the error is read out with it.
+      formRef.current?.querySelector<HTMLInputElement>('[name="sleep"]')?.focus();
       return;
     }
     save(picked);
@@ -78,7 +81,7 @@ function SleepForm({
 
       {returning && lastSleep !== null && <WelcomeBack state={state} lastSleep={lastSleep} />}
 
-      <form onSubmit={onSubmit} noValidate className="flex flex-1 flex-col">
+      <form ref={formRef} onSubmit={onSubmit} noValidate className="flex flex-1 flex-col">
         <Field
           label="I'm going to sleep at"
           type="time"
