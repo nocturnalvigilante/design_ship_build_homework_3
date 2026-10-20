@@ -117,3 +117,38 @@ A fresh subagent graded the repo and the live URL cold against the brief, as the
 | G23 | Talking points for class are scattered | `TALK.md`: the five questions, answered briefly | ☑ `929ba53` |
 
 **Not changed:** commit timestamps. Some commits cluster within minutes because each was committed as soon as it was verified; rewriting history to look spread out would misrepresent it.
+
+## H. Second strict review, 20 Oct: where marks could still be cut
+
+Three new reviewers, each given the brief and told to ignore this checklist: one read the brief literally, one checked every claim in the README against the code and history, and one used the live site by keyboard. Ranked by risk.
+
+| # | Where marks could be cut | Fix | Status |
+|---|---|---|---|
+| H1 | "Choose what to keep": the README says "I took its recommended set", as if the agent chose | Record the decisions I made in the setup session (the tool, the users, rotating shifts, not reusing the A2 style), in my own words | ☐ |
+| H2 | "Your Assignment 2 design system is a good place to start": A2 is never mentioned | Say what I decided about A2 and why | ☐ |
+| H3 | The commit-timestamp note claims "committed as soon as verified", but some commits share a second | Say plainly that each session's changes were split into one commit per change | ☐ |
+| H4 | Demo numbers don't match the screenshots, and "30 mg at 9:00" with "under 50 by 7:30" is impossible | Use the screenshot's own values everywhere | ☐ |
+| H5 | Stale counts: commits (says 60), errors (five, seven, really nine), "last shift", round-1 item count, old commit for the Vercel check, component list | Correct each | ☐ |
+| H6 | `drinks.ts` says estimates are "shown in the UI", but they aren't | Mark estimated drinks with "~" on chips and pills | ☐ |
+| H7 | "/context shows AGENTS.md loaded": only a sentence, no evidence | A screenshot of `/context` in `docs/` | ☐ needs me |
+| H8 | "Ask your agent to send subagents": claimed, not shown | Quote one subagent prompt and part of its report in `research.md` | ☐ |
+| H9 | "A page for each step": welcome back has no route of its own | A step → route table under Flows, explaining why welcome back belongs on `/sleep` | ☐ |
+| H10 | `/sleep` error doesn't move focus to the field; Clear data gives no confirmation | Focus on error; "Cleared." line | ☐ |
+| H11 | Settings says "Changes save as you make them", but the sleep line saves on leaving the field | Say exactly when it saves | ☐ |
+| H12 | Can't verify quickly: no repo link, commit hashes not clickable | Link the repo; make hashes links | ☐ |
+| H13 | The agent reads as the author ("computed by the agent", "Harsh-grader pass"); "I" and "we" mixed | One voice, decisions framed as mine | ☐ |
+| H14 | `AGENTS.md` has "(working name)", cluster host names and a username, stale wording, and "the commit history is graded" | Clean up and update it | ☐ |
+| H15 | Cluster host names in README and CHECKLIST | "a production build" | ☐ |
+| H16 | The submitted checklist has empty boxes and talks to the student ("rehearsing is on you") | Section E points to the notes; no instructions | ☐ |
+| H17 | Cited checks aren't in the repo (the first-run browser script, the diagram check, the testers' reports) | Commit the scripts and the round-2 tester's report | ☐ |
+| H18 | `research.md` quotes "62 mg … at your 9:00 sleep" as if it's the app | Label it the planned wording | ☐ |
+| H19 | The README's name-clash error is cut short | Full text | ☐ |
+| H20 | Focus is lost after Remove; Clear data loses focus when the confirm opens and after Keep | Focus goes to Undo, to "Yes, clear it all", and back to "Clear my data" | ☐ |
+| H21 | A sleep from a week ago reads "Tuesday", as if this week; the bars too | Dates ("Tue 13 Oct") once it's 6+ days ago | ☐ |
+| H22 | On the return screen Enter does nothing (the one button isn't a submit) | "Same as last time" submits the form | ☐ |
+| H23 | Settings drops an invalid sleep line silently when you leave | Keep what was typed, with its error, until it's fixed | ☐ |
+| H24 | Hero sleep link and "Adjust" are under 44 px tall | 44 px tap area | ☐ |
+| H25 | Now's page title is just "Last Cup" | "Now · Last Cup" | ☐ |
+| H26 | The curve runs through the "50 mg" label | A background-coloured outline on chart labels | ☐ |
+| H27 | "0" or "-5" mg gets the "two shots" message; a restored draft can bring back a week-old time | A message for 0 or less; old draft times reset to now | ☐ |
+| H28 | At 11:30 PM it suggests 9:00 AM; "your 9:00 AM tomorrow sleep" reads badly | Also consider 1:00 AM; "your 9:00 AM sleep tomorrow" | ☐ |
