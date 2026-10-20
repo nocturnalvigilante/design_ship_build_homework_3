@@ -57,7 +57,7 @@ function SleepForm({
   function onSubmit(e: FormEvent) {
     e.preventDefault();
     if (picked === null) {
-      setError("Pick a time, like 09:00. Any hour works, including mornings after a night shift.");
+      setError("Pick a time, like 9:00 AM. Any hour works, including mornings after a night shift.");
       // Same as /log: focus goes to the field to fix, so the error is read out with it.
       formRef.current?.querySelector<HTMLInputElement>('[name="sleep"]')?.focus();
       return;
@@ -102,8 +102,13 @@ function SleepForm({
         />
 
         <ActionBar>
+          {/* When the field still holds last time, this is the form's submit, so Enter works too. */}
           {returning && sameTime !== null && (
-            <Button full onClick={() => save(sameTime)}>
+            <Button
+              full
+              type={picked === sameTime ? "submit" : "button"}
+              onClick={picked === sameTime ? undefined : () => save(sameTime)}
+            >
               <span className="tabular-nums">
                 Same as last time: {clock(sameTime)} {dayLabel(sameTime, now)}
               </span>
@@ -193,7 +198,9 @@ function PastSleeps({ state, sleeps, now }: { state: LastCupState; sleeps: numbe
                 style={{ height: `${Math.max(3, (r.mg / top) * 48)}px` }}
               />
               <span aria-hidden="true" className="text-xs text-muted">
-                {new Date(r.t).toLocaleDateString([], { weekday: "short" })}
+                {now - r.t < 6 * 24 * HOUR
+                  ? new Date(r.t).toLocaleDateString([], { weekday: "short" })
+                  : new Date(r.t).toLocaleDateString([], { day: "numeric", month: "short" })}
               </span>
             </li>
           );

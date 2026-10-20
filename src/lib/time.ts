@@ -44,11 +44,12 @@ export function nextOccurrence(hhmm: string, now: number): number | null {
 }
 
 /**
- * A sensible first guess: the sooner of 9:00 (after a night shift) and 23:00 (a usual
- * night), skipping one under 45 min away. So 2am or 7:15am suggests 9:00, 3pm suggests 23:00.
+ * A sensible first guess: the soonest of 9:00 (after a night shift), 23:00 (a usual night)
+ * and 1:00 (a late one), skipping any under 45 min away. So 2am or 7:15am suggests 9:00,
+ * 3pm suggests 23:00, and 11:30pm suggests 1:00.
  */
 export function suggestedSleep(now: number): number {
-  const options = ["9:00", "23:00"]
+  const options = ["9:00", "23:00", "1:00"]
     .map((t) => nextOccurrence(t, now)!)
     .filter((t) => t - now >= 45 * 60_000);
   return Math.min(...options);
@@ -64,7 +65,14 @@ export function dayLabel(ms: number, now: number) {
   if (days === 0) return "today";
   if (days === 1) return "tomorrow";
   if (days === -1) return "yesterday";
+  // A weekday alone is only clear within the week; further back, give the date ("Tue 13 Oct").
+  if (Math.abs(days) >= 6) return shortDate(ms);
   return new Date(ms).toLocaleDateString(undefined, { weekday: "long" });
+}
+
+/** "Tue 13 Oct", in the device's own order. */
+export function shortDate(ms: number) {
+  return new Date(ms).toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" });
 }
 
 /** "in 7 h", "in 45 min". */
