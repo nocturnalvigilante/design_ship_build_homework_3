@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/Button";
 import { Field } from "@/components/Field";
 import { Notice } from "@/components/Notice";
@@ -33,6 +33,12 @@ function SettingsForm({
   const [threshold, setThreshold] = useState(String(state.thresholdMg));
   const [thresholdError, setThresholdError] = useState<string>();
   const [confirmClear, setConfirmClear] = useState(false);
+  const [cleared, setCleared] = useState(false);
+  // The confirm buttons go away, so keyboard focus moves to the confirmation once.
+  const clearedRef = useRef<HTMLParagraphElement>(null);
+  useEffect(() => {
+    if (cleared) clearedRef.current?.focus();
+  }, [cleared]);
 
   // Checked as you type, saved when you leave the field: typing "50" shouldn't save 5 on the way.
   function check(raw: string) {
@@ -56,7 +62,10 @@ function SettingsForm({
 
   return (
     <div className="flex flex-col gap-8">
-      <p className="-mt-2 text-muted">Changes save as you make them, on this device.</p>
+      <p className="-mt-2 text-muted">
+        The half-life saves as you move it; the sleep line saves when you leave the box. Both stay
+        on this device.
+      </p>
       <Slider
         label="Caffeine half-life"
         value={state.halfLifeH}
@@ -106,6 +115,7 @@ function SettingsForm({
                 onClick={() => {
                   clearState();
                   setConfirmClear(false);
+                  setCleared(true);
                   setThreshold(String(DEFAULT_THRESHOLD_MG));
                 }}
               >
@@ -117,9 +127,16 @@ function SettingsForm({
             </div>
           </div>
         ) : (
-          <Button variant="secondary" onClick={() => setConfirmClear(true)}>
-            Clear my data
-          </Button>
+          <>
+            {cleared && (
+              <p role="status" tabIndex={-1} ref={clearedRef} className="text-text">
+                Cleared. Last Cup will start fresh next time you open Now.
+              </p>
+            )}
+            <Button variant="secondary" onClick={() => setConfirmClear(true)}>
+              Clear my data
+            </Button>
+          </>
         )}
       </section>
     </div>
