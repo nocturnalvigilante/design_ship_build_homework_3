@@ -64,7 +64,9 @@ function validate(
   const mg = typed ? Math.round(Number(typed[0].replace(/mg\b.*$/i, "").replace(/,/g, ""))) : NaN;
   if (!values.mg.trim()) {
     errors.mg = "Enter the caffeine in mg, like 180. It’s on the can or the café’s menu.";
-  } else if (!Number.isFinite(mg) || mg <= 0) {
+  } else if (Number.isFinite(mg) && mg <= 0) {
+    errors.mg = "Enter more than 0 mg, like 80 for a Red Bull.";
+  } else if (!Number.isFinite(mg)) {
     errors.mg = /\d/.test(values.mg)
       ? "Enter just the number of mg, like 180. For two shots of espresso, that’s 126."
       : "Enter the caffeine as a number of mg, like 180. It’s on the can or the café’s menu.";
@@ -106,10 +108,11 @@ function LogForm({
   const [name, setName] = useState(draft?.name ?? "");
   const [mg, setMg] = useState(draft?.mg ?? "");
   // The input only holds whole minutes; if it's untouched, "now" means the moment of saving.
-  const [atTouched, setAtTouched] = useState(draft?.atTouched ?? false);
-  const [at, setAt] = useState(() =>
-    draft?.atTouched && draft.at ? draft.at : toLocalInput(Date.now()),
-  );
+  // A kept time older than a day can't be logged anyway, so a stale draft starts from now.
+  const draftAtOk =
+    draft?.atTouched && draft.at && Date.now() - new Date(draft.at).getTime() < 24 * HOUR;
+  const [atTouched, setAtTouched] = useState(Boolean(draftAtOk));
+  const [at, setAt] = useState(() => (draftAtOk ? draft!.at : toLocalInput(Date.now())));
   // Off by default: most drinks typed here are one-offs, and those don't need a name.
   const [remember, setRemember] = useState(draft?.remember ?? false);
   const [errors, setErrors] = useState<Errors>({});
