@@ -34,8 +34,8 @@ On a laptop, Now uses two columns:
 | A reason to come back, and a tool that remembers | Welcome back with last time and recent sleeps; everything in `localStorage` (screen 4) |
 | Keyboard, labels, contrast checked with the agent | [Accessibility](#accessibility), plus [`scripts/contrast.mjs`](scripts/contrast.mjs) |
 | The first-run check and its feedback | [First-run check](#first-run-check): two rounds, each item linked to its commit; the testers' [round 1](docs/evidence/first-run-round1.md) and [round 2](docs/evidence/first-run-round2.md) reports, unedited |
-| Commits that show progress | COMMIT_COUNT small commits over four sessions, 16–20 October: [history](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commits/main) |
-| `AGENTS.md` as the context file | [`AGENTS.md`](AGENTS.md); no `CLAUDE.md`; CONTEXT_EVIDENCE |
+| Commits that show progress | Over 85 small commits over four sessions, 16–20 October: [history](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commits/main) |
+| `AGENTS.md` as the context file | [`AGENTS.md`](AGENTS.md); no `CLAUDE.md`; `/context` listed it under Memory files (checked 17 Oct) |
 | Visual style (optional) | A warm night palette from research, not my Assignment 2 systems; see [Decisions I made](#decisions-i-made) |
 
 ## Flows
@@ -233,21 +233,21 @@ The brief asks for the agent to try the deployed tool as a brand-new user. I ran
 
 | Feedback (most important first) | Change |
 |---|---|
-| "Log drink" is half hidden behind the bottom nav, and fully hidden once an error appears | A shared `ActionBar` pins the main action above the nav on both forms (`08a0b2d`) |
-| Chips show "+34 at sleep" but never the dose, so someone with a bigger can can't tell the app assumed 80 mg | Each chip shows its mg (`6d127a5`) |
-| The "now" dot sits at 0 mg right after a drink, while the curve jumps to 80 | The dot is placed at the exact current total, and doses draw as steps (`24d2281`) |
-| Coral chips are never explained | A one-line key under the chips (`6d127a5`) |
-| Logging from the form gives no confirmation; Remove deletes with no undo | One "Logged / Removed …, Undo" line for all three (`9521e38`) |
-| "180mg large" is rejected though the number is right there | The leading number is read; the error now says "Enter just the number of mg, like 180" (`e9233e5`) |
-| A one-off drink shouldn't need a name | The name is only required when saving it as a chip (`e9233e5`) |
-| Nothing shows how much is in me *now* | "Last 24 hours: 260 mg drunk, 260 mg in you now", seen right after both drinks (`9c675bd`) |
-| "4:48" on the next shift doesn't say it was yesterday | "yesterday 4:48" (`9c675bd`) |
-| "Same time" next to "Save sleep time" is unclear; the intro sits above the question | "Same as last time" vs "Use the time above"; the question comes first (`a3f9500`) |
-| The caveats are only in Settings | "An estimate, not medical advice…" under the curve, linking to Adjust (`993485f`) |
-| The "1"s in the hero look like stray strokes | Proportional figures for the hero (`5300d25`) |
-| The focus ring on the Now tab is clipped by the screen edge | The ring is drawn inside the tab (`5405945`, `033ecf5`) |
-| Settings save silently | A line saying when changes save (`ad8e281`, later made exact in `79b3f8d`) |
-| The 80 mg placeholder looks pre-filled | Removed (`e9233e5`) |
+| "Log drink" is half hidden behind the bottom nav, and fully hidden once an error appears | A shared `ActionBar` pins the main action above the nav on both forms ([`08a0b2d`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/08a0b2d)) |
+| Chips show "+34 at sleep" but never the dose, so someone with a bigger can can't tell the app assumed 80 mg | Each chip shows its mg ([`6d127a5`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/6d127a5)) |
+| The "now" dot sits at 0 mg right after a drink, while the curve jumps to 80 | The dot is placed at the exact current total, and doses draw as steps ([`24d2281`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/24d2281)) |
+| Coral chips are never explained | A one-line key under the chips ([`6d127a5`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/6d127a5)) |
+| Logging from the form gives no confirmation; Remove deletes with no undo | One "Logged / Removed …, Undo" line for all three ([`9521e38`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/9521e38)) |
+| "180mg large" is rejected though the number is right there | The leading number is read; the error now says "Enter just the number of mg, like 180" ([`e9233e5`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/e9233e5)) |
+| A one-off drink shouldn't need a name | The name is only required when saving it as a chip ([`e9233e5`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/e9233e5)) |
+| Nothing shows how much is in me *now* | "Last 24 hours: 260 mg drunk, 260 mg in you now", seen right after both drinks ([`9c675bd`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/9c675bd)) |
+| "4:48" on the next shift doesn't say it was yesterday | "yesterday 4:48" ([`9c675bd`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/9c675bd)) |
+| "Same time" next to "Save sleep time" is unclear; the intro sits above the question | "Same as last time" vs "Use the time above"; the question comes first ([`a3f9500`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/a3f9500)) |
+| The caveats are only in Settings | "An estimate, not medical advice…" under the curve, linking to Adjust ([`993485f`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/993485f)) |
+| The "1"s in the hero look like stray strokes | Proportional figures for the hero ([`5300d25`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/5300d25)) |
+| The focus ring on the Now tab is clipped by the screen edge | The ring is drawn inside the tab ([`5405945`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/5405945), [`033ecf5`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/033ecf5)) |
+| Settings save silently | A line saying when changes save ([`ad8e281`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/ad8e281), later made exact in [`79b3f8d`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/79b3f8d)) |
+| The 80 mg placeholder looks pre-filled | Removed ([`e9233e5`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/e9233e5)) |
 
 **Not changed:** adding a custom chip pushes the fifth built-in (Espresso) to "More drinks" on /log. That's intended: the grid shows the five drinks you use most.
 
@@ -269,16 +269,16 @@ The brief asks for the agent to try the deployed tool as a brand-new user. I ran
 
 | Feedback (most important first) | Change |
 |---|---|
-| A drink had earlier is easy to log at the wrong time: the time defaults to now, below the fold | One-tap "Just now / 30 min / 1 h / 2 h / 3 h ago" under the time field (`f049ae6`) |
-| No direct answer to "is one more OK?"; she had to add 38 + 25 | "Room for 10 mg more at sleep before your 50 mg line", above the chips (`c0a275b`) |
-| "Last shift" makes no sense for a student | "Last time" (`b440fd6`) |
-| The welcome card said 52 mg and the bar for the same sleep said 54 | Both count every drink before that sleep (`b440fd6`) |
-| "2 mg still in you" next to "Nothing logged yet" | That line only shows when nothing is in you (`c0a275b`) |
-| "200 mg drunk, 209 mg in you now" looks wrong | "In you now: 209 mg (9 from before that)" (`c0a275b`) |
-| "Clear by 2:32 AM" really means under 50 mg; elsewhere it says "Under 50 mg by" | One phrase: "Under it by 2:32 AM" (`c0a275b`) |
-| The pinned Log button covers the second line of an error | The first error scrolls to the middle of the screen (`f049ae6`) |
-| Two buttons on the welcome screen that do the same thing | "Use the time above" only shows once you change the time (`b440fd6`) |
-| After Undo, keyboard focus drops to the page | It goes back to the chips (`c0a275b`) |
+| A drink had earlier is easy to log at the wrong time: the time defaults to now, below the fold | One-tap "Just now / 30 min / 1 h / 2 h / 3 h ago" under the time field ([`f049ae6`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/f049ae6)) |
+| No direct answer to "is one more OK?"; she had to add 38 + 25 | "Room for 10 mg more at sleep before your 50 mg line", above the chips ([`c0a275b`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/c0a275b)) |
+| "Last shift" makes no sense for a student | "Last time" ([`b440fd6`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/b440fd6)) |
+| The welcome card said 52 mg and the bar for the same sleep said 54 | Both count every drink before that sleep ([`b440fd6`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/b440fd6)) |
+| "2 mg still in you" next to "Nothing logged yet" | That line only shows when nothing is in you ([`c0a275b`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/c0a275b)) |
+| "200 mg drunk, 209 mg in you now" looks wrong | "In you now: 209 mg (9 from before that)" ([`c0a275b`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/c0a275b)) |
+| "Clear by 2:32 AM" really means under 50 mg; elsewhere it says "Under 50 mg by" | One phrase: "Under it by 2:32 AM" ([`c0a275b`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/c0a275b)) |
+| The pinned Log button covers the second line of an error | The first error scrolls to the middle of the screen ([`f049ae6`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/f049ae6)) |
+| Two buttons on the welcome screen that do the same thing | "Use the time above" only shows once you change the time ([`b440fd6`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/b440fd6)) |
+| After Undo, keyboard focus drops to the page | It goes back to the chips ([`c0a275b`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/c0a275b)) |
 
 **Not changed, and why:**
 - **Editing a logged drink's time:** Remove and re-log covers it, and the quick times make re-logging two taps.
@@ -295,19 +295,19 @@ Twice I asked for a strict review against every line of the brief, by subagents 
 
 | Finding | Change |
 |---|---|
-| "Save what the person typed" only held on an error; leaving `/log` lost it | The form is kept until the drink is logged, with "Start over" (`f4c5cf9`); Settings keeps an invalid value too (`8180977`) |
-| The one-tap box was ticked by default, so a one-off needed a name | Unticked by default (`8b01dc6`) |
-| "2 shots" logged 2 mg; "1,000" logged 1 mg; "0" got the wrong message | Strict parsing with a specific error for each (`8b01dc6`, `c2c33d2`) |
-| A custom "Coffee" silently didn't become a chip | An error next to the name (`8b01dc6`) |
-| "Under 50 mg by 9:02, before you sleep" at a 9:00 sleep (rounding) | One rounding rule (`3e64afb`) |
-| Coming back only remembered last shift | Recent sleeps as bars: "Over your line at 4 of your last 6 sleeps" (`9ae97a9`) |
-| A sleep from a week ago read "Tuesday", as if this week | Dates once it's 6+ days ago (`2acf580`) |
-| At 7:15am it suggested 11:00 PM for a nurse just off shift | The soonest of 9:00, 23:00 and 1:00 (`05dfe5c`, `2acf580`) |
-| Keyboard focus was lost after Remove and during Clear data; Enter did nothing on the return screen | Focus moves to what replaced the button; Enter submits (`ad18037`, `8180977`, `2acf580`) |
-| `/log` hand-rolled its pills and checkbox | Shared `Pill` and `Checkbox` (`1c41078`) |
-| Chip edges at 1.3:1; two inline links under 44 px tall | 3.7:1 (WCAG 1.4.11) (`48deae7`); 44 px tap areas (`ad18037`) |
-| `drinks.ts` said estimates were shown, but they weren't | "~160 mg" on the two estimated drinks (`75a61ab`) |
-| Checks were cited but not in the repo | [`scripts/`](scripts/) and [`docs/evidence/`](docs/evidence/) (`ebcc57c`, `fbd4d27`) |
+| "Save what the person typed" only held on an error; leaving `/log` lost it | The form is kept until the drink is logged, with "Start over" ([`f4c5cf9`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/f4c5cf9)); Settings keeps an invalid value too ([`8180977`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/8180977)) |
+| The one-tap box was ticked by default, so a one-off needed a name | Unticked by default ([`8b01dc6`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/8b01dc6)) |
+| "2 shots" logged 2 mg; "1,000" logged 1 mg; "0" got the wrong message | Strict parsing with a specific error for each ([`8b01dc6`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/8b01dc6), [`c2c33d2`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/c2c33d2)) |
+| A custom "Coffee" silently didn't become a chip | An error next to the name ([`8b01dc6`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/8b01dc6)) |
+| "Under 50 mg by 9:02, before you sleep" at a 9:00 sleep (rounding) | One rounding rule ([`3e64afb`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/3e64afb)) |
+| Coming back only remembered last shift | Recent sleeps as bars: "Over your line at 4 of your last 6 sleeps" ([`9ae97a9`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/9ae97a9)) |
+| A sleep from a week ago read "Tuesday", as if this week | Dates once it's 6+ days ago ([`2acf580`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/2acf580)) |
+| At 7:15am it suggested 11:00 PM for a nurse just off shift | The soonest of 9:00, 23:00 and 1:00 ([`05dfe5c`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/05dfe5c), [`2acf580`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/2acf580)) |
+| Keyboard focus was lost after Remove and during Clear data; Enter did nothing on the return screen | Focus moves to what replaced the button; Enter submits ([`ad18037`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/ad18037), [`8180977`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/8180977), [`2acf580`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/2acf580)) |
+| `/log` hand-rolled its pills and checkbox | Shared `Pill` and `Checkbox` ([`1c41078`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/1c41078)) |
+| Chip edges at 1.3:1; two inline links under 44 px tall | 3.7:1 (WCAG 1.4.11) ([`48deae7`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/48deae7)); 44 px tap areas ([`ad18037`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/ad18037)) |
+| `drinks.ts` said estimates were shown, but they weren't | "~160 mg" on the two estimated drinks ([`75a61ab`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/75a61ab)) |
+| Checks were cited but not in the repo | [`scripts/`](scripts/) and [`docs/evidence/`](docs/evidence/) ([`ebcc57c`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/ebcc57c), [`fbd4d27`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/fbd4d27)) |
 
 ## Accessibility
 
@@ -349,8 +349,8 @@ One-compartment exponential decay, `remaining = dose × 0.5^(hours / halfLife)`,
 - **Checking instead of trusting.** Contrast is [a script](scripts/contrast.mjs). The flows and the keyboard were checked in headless Chrome ([`drive.mjs`](scripts/drive.mjs)). The diagrams are rendered by [`check-diagrams.mjs`](scripts/check-diagrams.mjs) to prove they parse. [`CHECKLIST.md`](CHECKLIST.md) only gets a tick once something has been verified.
 - **Easy:** small, single-purpose commits, and building the shared components first, so most fixes touched one file.
 - **Hard:**
-  - The fonts weren't loading at first, which only showed up on a real render (`86f8e05`).
-  - A drink logged within 30 s of the clock tick didn't count yet (`84fa5de`).
+  - The fonts weren't loading at first, which only showed up on a real render ([`86f8e05`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/86f8e05)).
+  - A drink logged within 30 s of the clock tick didn't count yet ([`84fa5de`](https://github.com/nocturnalvigilante/design_ship_build_homework_3/commit/84fa5de)).
   - The first-run tester's own browser was killed before `localStorage` reached disk, which looked like an app bug until it was traced.
   - The agent writes confident documentation. This README once claimed a fix that wasn't there, and only an outside review caught it. Now each claim is checked in the running app before it's ticked.
 
