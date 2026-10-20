@@ -39,6 +39,7 @@ export default function NowPage() {
 
   // After Undo the button goes away, so put keyboard focus back where the chips start.
   const chipsHeading = useRef<HTMLHeadingElement>(null);
+  const undoButton = useRef<HTMLButtonElement>(null);
   function refocus() {
     requestAnimationFrame(() => chipsHeading.current?.focus());
   }
@@ -103,6 +104,8 @@ export default function NowPage() {
         setToast(null);
       },
     });
+    // The row (and its Remove button) is gone, so focus goes to Undo, the next thing you'd want.
+    requestAnimationFrame(() => undoButton.current?.focus());
   }
 
   return (
@@ -133,7 +136,10 @@ export default function NowPage() {
             <p className="mt-1 text-sm text-muted tabular-nums">
               An estimate, not medical advice: {halfLifeH} h half-life, counted from when you start
               drinking.{" "}
-              <Link href="/settings" className="text-text underline decoration-edge underline-offset-4 hover:decoration-amber">
+              <Link
+                  href="/settings"
+                  className="-my-3.5 inline-block py-3.5 text-text underline decoration-edge underline-offset-4 hover:decoration-amber"
+                >
                 Adjust
               </Link>
             </p>
@@ -147,6 +153,7 @@ export default function NowPage() {
                 <>
                   <p className="tabular-nums">{toast.text}</p>
                   <Button
+                    ref={undoButton}
                     variant="ghost"
                     className="px-3"
                     onClick={() => {

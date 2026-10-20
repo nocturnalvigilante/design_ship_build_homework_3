@@ -30,10 +30,9 @@ export function HeroNumber({
         still in you at your{" "}
         <Link
           href="/sleep"
-          className="font-semibold tabular-nums underline decoration-edge underline-offset-4 hover:decoration-amber"
+          className="-my-3 inline-block py-3 font-semibold tabular-nums underline decoration-edge underline-offset-4 hover:decoration-amber"
         >
-          {clock(sleep)}
-          {day === "today" ? "" : ` ${day}`} sleep
+          {clock(sleep)} sleep{day === "today" ? "" : ` ${day}`}
         </Link>
       </p>
     </div>
