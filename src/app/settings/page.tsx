@@ -12,7 +12,22 @@ import {
   MAX_HALF_LIFE_H,
   MIN_HALF_LIFE_H,
 } from "@/lib/caffeine";
-import { clearState, useLastCup, type LastCupState } from "@/lib/storage";
+import {
+  clearState,
+  loadThresholdDraft,
+  saveThresholdDraft,
+  useLastCup,
+  type LastCupState,
+} from "@/lib/storage";
+
+// Checked as you type, saved when you leave the field: typing "50" shouldn't save 5 on the way.
+function check(raw: string) {
+  const mg = Number(raw);
+  // 0 would mean "never clear", so the clear-by time could never be shown.
+  return !raw.trim() || !Number.isFinite(mg) || mg < 1 || mg > 400
+    ? "Enter a number of mg between 1 and 400. 50 is a common starting point."
+    : undefined;
+}
 
 export default function SettingsPage() {
   const { state, update } = useLastCup();
@@ -30,24 +45,24 @@ function SettingsForm({
   state: LastCupState;
   update: ReturnType<typeof useLastCup>["update"];
 }) {
-  const [threshold, setThreshold] = useState(String(state.thresholdMg));
-  const [thresholdError, setThresholdError] = useState<string>();
+  // A value that wasn't valid when you left comes back with its error, instead of vanishing.
+  const [draft] = useState(loadThresholdDraft);
+  const [threshold, setThreshold] = useState(draft ?? String(state.thresholdMg));
+  const [thresholdError, setThresholdError] = useState(draft === null ? undefined : check(draft));
   const [confirmClear, setConfirmClear] = useState(false);
   const [cleared, setCleared] = useState(false);
-  // The confirm buttons go away, so keyboard focus moves to the confirmation once.
-  const clearedRef = useRef<HTMLParagraphElement>(null);
-  useEffect(() => {
-    if (cleared) clearedRef.current?.focus();
-  }, [cleared]);
 
-  // Checked as you type, saved when you leave the field: typing "50" shouldn't save 5 on the way.
-  function check(raw: string) {
-    const mg = Number(raw);
-    // 0 would mean "never clear", so the clear-by time could never be shown.
-    return !raw.trim() || !Number.isFinite(mg) || mg < 1 || mg > 400
-      ? "Enter a number of mg between 1 and 400. 50 is a common starting point."
-      : undefined;
-  }
+  // Each step of Clear data replaces the button you pressed, so focus moves to what replaced it.
+  const yesRef = useRef<HTMLButtonElement>(null);
+  const clearRef = useRef<HTMLButtonElement>(null);
+  const clearedRef = useRef<HTMLParagraphElement>(null);
+  const [focusNext, setFocusNext] = useState<"yes" | "clear" | "cleared" | null>(null);
+  useEffect(() => {
+    if (focusNext === "yes") yesRef.current?.focus();
+    if (focusNext === "clear") clearRef.current?.focus();
+    if (focusNext === "cleared") clearedRef.current?.focus();
+    setFocusNext(null);
+  }, [focusNext]);
 
   function onThreshold(raw: string) {
     setThreshold(raw);
@@ -57,6 +72,7 @@ function SettingsForm({
   function saveThreshold() {
     const error = check(threshold);
     setThresholdError(error);
+    saveThresholdDraft(error ? threshold : null);
     if (!error) update((s) => ({ ...s, thresholdMg: Math.round(Number(threshold)) }));
   }
 
@@ -110,18 +126,27 @@ function SettingsForm({
             <p className="text-coral">This deletes every drink, sleep time and setting.</p>
             <div className="flex gap-3">
               <Button
+                ref={yesRef}
                 variant="secondary"
                 className="border-coral text-coral"
                 onClick={() => {
                   clearState();
                   setConfirmClear(false);
                   setCleared(true);
+                  setFocusNext("cleared");
                   setThreshold(String(DEFAULT_THRESHOLD_MG));
+                  setThresholdError(undefined);
                 }}
               >
                 Yes, clear it all
               </Button>
-              <Button variant="ghost" onClick={() => setConfirmClear(false)}>
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  setConfirmClear(false);
+                  setFocusNext("clear");
+                }}
+              >
                 Keep my data
               </Button>
             </div>
@@ -133,7 +158,14 @@ function SettingsForm({
                 Cleared. Last Cup will start fresh next time you open Now.
               </p>
             )}
-            <Button variant="secondary" onClick={() => setConfirmClear(true)}>
+            <Button
+              ref={clearRef}
+              variant="secondary"
+              onClick={() => {
+                setConfirmClear(true);
+                setFocusNext("yes");
+              }}
+            >
               Clear my data
             </Button>
           </>

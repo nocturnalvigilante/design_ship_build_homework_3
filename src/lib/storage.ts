@@ -130,6 +130,7 @@ export function withNextSleep(s: LastCupState, at: number, now: number): LastCup
 export function clearState() {
   memoryRaw = null;
   clearDraft();
+  saveThresholdDraft(null);
   try {
     window.localStorage.removeItem(KEY);
   } catch {}
@@ -191,6 +192,24 @@ export function saveDraft(draft: LogDraft) {
 export function clearDraft() {
   try {
     window.localStorage.removeItem(DRAFT_KEY);
+  } catch {}
+}
+
+/** A sleep line typed in Settings that isn't valid yet, kept (with its error) until it's fixed. */
+const THRESHOLD_DRAFT_KEY = "lastcup:threshold-draft";
+
+export function loadThresholdDraft(): string | null {
+  try {
+    return window.localStorage.getItem(THRESHOLD_DRAFT_KEY);
+  } catch {
+    return null;
+  }
+}
+
+export function saveThresholdDraft(raw: string | null) {
+  try {
+    if (raw === null) window.localStorage.removeItem(THRESHOLD_DRAFT_KEY);
+    else window.localStorage.setItem(THRESHOLD_DRAFT_KEY, raw);
   } catch {}
 }
 
